@@ -45,14 +45,17 @@ const CONFIG = {
     { nome: "Combo Premium", descricao: "Serviço completo para uma experiência especial.", preco: "R$ 80", duracao: "90 min" }
   ],
 
+  // Horário padrão do template: segunda a sábado, das 09:00 às 19:00.
+  // Para personalizar um cliente, basta alterar aberto, abertura e fechamento.
+  // Domingo permanece fechado por padrão.
   horarios: [
-    ["Segunda", "Fechado"],
-    ["Terça", "09:00 – 19:00"],
-    ["Quarta", "09:00 – 19:00"],
-    ["Quinta", "09:00 – 20:00"],
-    ["Sexta", "09:00 – 20:00"],
-    ["Sábado", "08:00 – 18:00"],
-    ["Domingo", "Fechado"]
+    { dia: "Segunda", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Terça", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Quarta", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Quinta", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Sexta", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Sábado", aberto: true, abertura: "09:00", fechamento: "19:00" },
+    { dia: "Domingo", aberto: false }
   ],
 
   galeria: [
