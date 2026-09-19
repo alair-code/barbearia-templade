@@ -353,7 +353,17 @@ function setupBooking() {
     time.appendChild(empty);
 
     const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-    time.disabled = !(date.value && selected);
+    // O campo permanece habilitado para evitar a sensação de bloqueio.
+    // Enquanto faltarem serviço ou data, mostramos apenas uma orientação.
+    time.disabled = false;
+
+    if (!date.value && !selected) {
+      empty.textContent = "Selecione serviço e data";
+    } else if (!date.value) {
+      empty.textContent = "Selecione uma data";
+    } else if (!selected) {
+      empty.textContent = "Selecione um serviço";
+    }
 
     if (date.value && selected) {
       const times = buildDemoTimes(date.value, selected);
