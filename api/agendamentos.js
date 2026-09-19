@@ -11,10 +11,6 @@ function json(data, status = 200) {
   });
 }
 
-function normalizePhone(value) {
-  return String(value || "").replace(/\D/g, "").slice(0, 20);
-}
-
 function getTodayInBusinessTimeZone() {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: BUSINESS_TIME_ZONE,
@@ -99,16 +95,15 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const nome = String(body.nome || "").trim();
-    const telefone = normalizePhone(body.telefone);
     const data = String(body.data || "");
     const hora = String(body.hora || "");
     const nomesServicos = Array.isArray(body.servicos)
       ? body.servicos.map(String).map(s => s.trim()).filter(Boolean)
       : [];
 
-    if (nome.length < 2 || nome.length > 120 || telefone.length < 10 || !isValidDate(data) ||
+    if (nome.length < 2 || nome.length > 120 || !isValidDate(data) ||
         !/^([01]\d|2[0-3]):[0-5]\d$/.test(hora) || !nomesServicos.length || nomesServicos.length > 20) {
-      return json({ error: "Informe nome, WhatsApp, data, horário e pelo menos um serviço válido." }, 400);
+      return json({ error: "Informe nome, data, horário e pelo menos um serviço válido." }, 400);
     }
 
     const services = await sql`
@@ -161,12 +156,8 @@ export async function POST(request) {
 
     const bookingRows = await sql`
       WITH cliente AS (
-        INSERT INTO clientes (nome, telefone, ativo)
-        VALUES (${nome}, ${telefone}, true)
-        ON CONFLICT (telefone) DO UPDATE SET
-          nome = EXCLUDED.nome,
-          ativo = true,
-          updated_at = now()
+        INSERT INTO clientes (nome, ativo)
+        VALUES (${nome}, true)
         RETURNING id
       ),
       novo_agendamento AS (

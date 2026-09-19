@@ -672,7 +672,6 @@ function setupBooking() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: $("#booking-name")?.value.trim() || "",
-          telefone: $("#booking-phone")?.value.trim() || "",
           data: date.value,
           hora: time.value,
           servicos: selection.services.map(item => item.nome)
@@ -693,10 +692,29 @@ function setupBooking() {
         time.value + " • " +
         formatPrice(result.booking.valorTotal);
 
+      const whatsapp = String(CONFIG.whatsapp || "").replace(/\D/g, "");
+      const servicesText = selection.services.map(item => item.nome).join(", ");
+      const whatsappMessage = [
+        "Olá! Acabei de solicitar um agendamento.",
+        "Nome: " + ($("#booking-name")?.value.trim() || ""),
+        "Serviços: " + servicesText,
+        "Data: " + date.value.split("-").reverse().join("/"),
+        "Horário: " + time.value,
+        "Valor: " + formatPrice(result.booking.valorTotal)
+      ].join("\n");
+
       form.reset();
       currentAvailableTimes = [];
       await loadAvailability();
       showToast("Agendamento realizado com sucesso.");
+
+      if (whatsapp) {
+        window.open(
+          "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(whatsappMessage),
+          "_blank",
+          "noopener,noreferrer"
+        );
+      }
     } catch (error) {
       console.error("Erro ao conectar com o backend:", error);
       summary.textContent = "Não foi possível conectar ao sistema de agendamento. Tente novamente.";
