@@ -1,5 +1,7 @@
 const CONFIG={
   nome:"Barbearia Template",
+  logo:"assets/branding/logo.svg",
+  logoAlt:"Logo da Barbearia Template",
   slogan:"Seu estilo começa aqui.",
   descricao:"Um espaço pensado para quem valoriza um bom corte, atendimento de qualidade e personalidade em cada detalhe.",
   whatsapp:"5500000000000",
@@ -30,7 +32,8 @@ const $$=selector=>document.querySelectorAll(selector);
 
 function applyConfig(){
   document.title=CONFIG.nome;
-  $$("[data-config]").forEach(el=>{const key=el.dataset.config;if(CONFIG[key]!==undefined)el.textContent=CONFIG[key]});
+  $("[data-config]").forEach(el=>{const key=el.dataset.config;if(CONFIG[key]!==undefined)el.textContent=CONFIG[key]});
+  $("[data-logo]").forEach(el=>{el.src=CONFIG.logo;el.alt=CONFIG.logoAlt});
   $$("[data-config-link='instagram']").forEach(el=>el.href=CONFIG.instagramUrl);
   $$(".whatsapp-link").forEach(el=>el.href="https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent("Olá! Gostaria de agendar um horário."));
   const mapLink=$(".map-link");if(mapLink)mapLink.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(CONFIG.mapQuery);
