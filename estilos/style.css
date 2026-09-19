@@ -75,8 +75,10 @@ button,input,select{font:inherit}
 .main-nav{display:flex;align-items:center;gap:20px;font-size:14px}
 .main-nav a{opacity:.82}
 .main-nav a:hover,
-.main-nav a:focus-visible{opacity:1;color:var(--accent)}
+.main-nav a:focus-visible,
+.main-nav a[aria-current="page"]{opacity:1;color:var(--accent)}
 .nav-cta{border:1px solid var(--accent);padding:9px 14px;border-radius:999px!important;color:#fff!important}
+.nav-cta[aria-current="page"]{background:var(--accent);color:#111!important}
 
 /* Botão do menu mobile. */
 .menu-toggle{display:none;background:none;border:0;color:#fff;padding:8px;cursor:pointer}
@@ -222,6 +224,9 @@ button,input,select{font:inherit}
 .booking-summary{padding:15px;background:#f4f1eb;border-radius:10px;color:var(--muted);margin:10px 0 18px}
 .booking-note{font-size:13px;padding-left:14px;border-left:2px solid var(--accent)}
 .booking-form .button{width:100%}
+.booking-form select option{padding:10px}
+.booking-form label:focus-within{color:#111}
+.booking-form .button:focus-visible{box-shadow:0 0 0 4px rgba(198,155,82,.18)}
 
 /* Contato. */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px}
@@ -236,14 +241,39 @@ button,input,select{font:inherit}
 .footer-logo{display:block;width:128px;height:36px;object-fit:contain;object-position:left center}
 
 /* Notificação temporária. */
-.toast{position:fixed;right:20px;bottom:20px;max-width:min(420px,calc(100% - 40px));background:#111;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:50}
+.floating-whatsapp{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:40;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:54px;
+  height:54px;
+  padding:0 16px;
+  border-radius:999px;
+  background:#1f9d55;
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:0 12px 30px rgba(0,0,0,.22);
+  transition:transform .2s,box-shadow .2s,filter .2s
+}
+.floating-whatsapp:hover,
+.floating-whatsapp:focus-visible{
+  transform:translateY(-3px);
+  filter:brightness(1.05);
+  box-shadow:0 16px 34px rgba(0,0,0,.26)
+}
+.toast{position:fixed;right:20px;bottom:88px;max-width:min(420px,calc(100% - 40px));background:#111;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:50}
 .toast.show{opacity:1;transform:translateY(0)}
 
 /* Foco visível para teclado. */
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* Tablet. */
-@media(max-width:900px){
+@media(max-width:960px){
   .main-nav{gap:12px}
   .hero-grid{grid-template-columns:1fr}
   .hero-card{max-width:500px}
@@ -275,6 +305,11 @@ button,input,select{font:inherit}
 }
 
 /* Respeita a preferência do usuário por menos movimento. */
+@media(max-width:700px){
+  .floating-whatsapp{right:14px;bottom:14px;min-width:52px;height:52px;padding:0 14px}
+  .toast{right:14px;bottom:78px;max-width:calc(100% - 28px)}
+}
+
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important;animation:none!important}
