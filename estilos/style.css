@@ -209,10 +209,14 @@ button,input,select{font:inherit}
 .booking-form{background:#fff;padding:30px;border-radius:var(--radius);box-shadow:var(--shadow)}
 .booking-form label{display:grid;gap:7px;font-weight:700;font-size:14px;margin-bottom:18px}
 .booking-form .booking-field span{display:block;color:#171717;font-weight:700}
-.booking-form input,.booking-form select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:10px;padding:0 13px;background:#fff;color:#171717;display:block;appearance:auto}
+.booking-form input,.booking-form select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:10px;padding:0 13px;background:#fff;color:#171717;display:block;appearance:auto;font-size:16px}
+.booking-form select{cursor:pointer}
+.booking-form option:disabled{color:#9a958c}
+.booking-form input:disabled,.booking-form select:disabled{opacity:.75;cursor:not-allowed}
 .booking-form input[type="date"]{min-height:52px;cursor:pointer;color:#171717;background:#fff}
 .booking-form input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:1}
 .booking-form input:focus,.booking-form select:focus{outline:2px solid rgba(198,155,82,.45);outline-offset:1px}
+.booking-form input[aria-invalid="true"],.booking-form select[aria-invalid="true"]{border-color:#9b3d32}
 .booking-form select:disabled{background:#f4f1eb;color:#8b857b;cursor:not-allowed}
 .booking-form .button:disabled{opacity:.55;cursor:not-allowed}
 .booking-summary{padding:15px;background:#f4f1eb;border-radius:10px;color:var(--muted);margin:10px 0 18px}
