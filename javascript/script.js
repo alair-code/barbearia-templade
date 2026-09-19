@@ -306,6 +306,17 @@ function parseOpeningHours(value) {
 }
 
 // Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
+function isDateBeforeToday(dateValue) {
+  return Boolean(dateValue) && dateValue < getLocalDate();
+}
+
+function isValidBookingDate(dateValue) {
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(dateValue)) return false;
+  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false && isDateBeforeToday(dateValue)) return false;
+  return true;
+}
+
+// Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
 function buildDemoTimes(dateValue, service) {
   const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
   const dayName = dayNames[getDayIndex(dateValue)];
@@ -318,7 +329,7 @@ function buildDemoTimes(dateValue, service) {
   // Se um serviço foi escolhido, usamos sua duração para impedir início
   // próximo demais do fechamento.
   const duration = service ? parseInt(service.duracao, 10) || 30 : 30;
-  const interval = 15;
+  const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
   const now = new Date();
   const isToday = dateValue === getLocalDate();
   const currentMinutes = isToday ? now.getHours() * 60 + now.getMinutes() : -1;
@@ -366,7 +377,15 @@ function setupBooking() {
 
   const updateTimes = () => {
     const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-    const validTimes = date.value ? buildDemoTimes(date.value, selected) : [];
+    const validDate = isValidBookingDate(date.value);
+    const validTimes = validDate ? buildDemoTimes(date.value, selected) : [];
+
+    if (date.value && !validDate) {
+      date.setCustomValidity("Escolha hoje ou uma data futura.");
+      summary.textContent = "A data escolhida não é válida. Selecione hoje ou uma data futura.";
+    } else {
+      date.setCustomValidity("");
+    }
 
     Array.from(time.options).forEach((option, index) => {
       if (index === 0) {
@@ -399,8 +418,10 @@ function setupBooking() {
 
   // A data deve aparecer preenchida imediatamente, sem depender da seleção de serviço.
   const today = getLocalDate();
-  date.min = today;
-  date.value = date.value || today;
+  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false) {
+    date.min = today;
+  }
+  date.value = isValidBookingDate(date.value) ? date.value : today;
   date.removeAttribute("disabled");
   date.removeAttribute("readonly");
 
@@ -416,7 +437,19 @@ function setupBooking() {
       return;
     }
 
-    showToast("Agendamento demonstrativo confirmado.");
+    if (!isValidBookingDate(date.value)) {
+      date.setCustomValidity("Escolha hoje ou uma data futura.");
+      date.reportValidity();
+      summary.textContent = "Não é possível agendar para uma data anterior a hoje.";
+      return;
+    }
+
+    if (!buildDemoTimes(date.value, CONFIG.servicos[Number(service.value)]).includes(time.value)) {
+      summary.textContent = "Esse horário não está disponível para o serviço selecionado.";
+      return;
+    }
+
+    showToast("Agendamento demonstrativo confirmado. A disponibilidade real será validada quando o backend estiver integrado.");
   });
 
   updateTimes();
