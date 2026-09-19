@@ -43,7 +43,7 @@ function applyConfig() {
   const twitterImage = document.querySelector('meta[name="twitter:image"]');
   if (twitterImage) twitterImage.content = toAbsoluteUrl(CONFIG.seo?.imagem || CONFIG.logo);
 
-  $("[data-config]").forEach(element => {
+  $$("[data-config]").forEach(element => {
     const key = element.dataset.config;
     if (CONFIG[key] !== undefined) element.textContent = CONFIG[key];
   });
