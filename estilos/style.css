@@ -1,35 +1,62 @@
+/* ==========================================================================
+   VARIÁVEIS GLOBAIS E CONFIGURAÇÃO BASE
+   ========================================================================== */
 :root{--bg:#f4f1eb;--surface:#fff;--ink:#171717;--muted:#6d6a64;--dark:#111;--dark-2:#1a1a1a;--accent:#c69b52;--line:rgba(23,23,23,.12);--radius:18px;--shadow:0 18px 60px rgba(0,0,0,.12)}
+/* Box sizing previsível para todos os elementos. */
 *{box-sizing:border-box}
+/* Rolagem suave e compensação do cabeçalho fixo ao usar âncoras. */
 html{scroll-behavior:smooth;scroll-padding-top:84px}
+/* Estilos gerais da página e tipografia principal. */
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif;line-height:1.6;overflow-x:hidden}
 body.menu-open{overflow:hidden}
+/* Links herdam a identidade visual e não recebem sublinhado por padrão. */
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}
+/* Container centralizado que limita a largura do conteúdo. */
 .container{width:min(1160px,calc(100% - 40px));margin:auto}
+/* Link de acessibilidade para pular diretamente ao conteúdo principal. */
 .skip-link{position:fixed;left:16px;top:16px;z-index:100;padding:10px 14px;background:var(--accent);color:#111;border-radius:8px;transform:translateY(-150%);transition:.2s}
 .skip-link:focus{transform:none}
+/* Espaçamento vertical padrão das seções. */
 .section{padding:100px 0}
+/* Variante de seção com fundo escuro. */
 .section-dark{background:var(--dark);color:#f5f2eb}
+/* Cabeçalho fixo durante a navegação. */
 .site-header{position:sticky;top:0;z-index:20;background:rgba(17,17,17,.94);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)}
+/* Alinhamento interno do cabeçalho. */
 .header-inner{min-height:76px;display:flex;align-items:center;justify-content:space-between}
+/* Área da marca e da logo. */
 .brand{display:flex;align-items:center;min-width:0}
 .brand-logo{display:block;width:160px;height:45px;object-fit:contain;object-position:left center}
+/* Navegação principal em telas grandes. */
 .main-nav{display:flex;align-items:center;gap:20px;font-size:14px}
 .main-nav a{opacity:.82}
-.main-nav a:hover,.main-nav a:focus-visible{opacity:1;color:var(--accent)}
+.main-nav a:hover,.main-nav a/* Indicador de foco acessível para teclado. */
+:focus-visible{opacity:1;color:var(--accent)}
 .nav-cta{border:1px solid var(--accent);padding:9px 14px;border-radius:999px!important;color:#fff!important}
+/* Botão do menu mobile, oculto em desktop. */
 .menu-toggle{display:none;background:none;border:0;color:#fff;padding:8px;cursor:pointer}
 .menu-toggle span{display:block;width:25px;height:2px;background:#fff;margin:5px}
+/* HERO: bloco de destaque visual da página. */
 .hero{position:relative;min-height:720px;display:grid;align-items:center;background:linear-gradient(100deg,#111 0%,#191816 55%,#29241d 100%);color:#fff;overflow:hidden}
+/* Elementos decorativos do fundo do HERO. */
 .hero:before{content:"";position:absolute;width:760px;height:760px;right:-320px;bottom:-430px;border:1px solid rgba(198,155,82,.18);border-radius:50%;box-shadow:0 0 0 70px rgba(198,155,82,.025),0 0 0 140px rgba(198,155,82,.02)}
 .hero:after{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-180px;top:-140px;background:radial-gradient(circle,rgba(198,155,82,.28),transparent 68%)}
+/* Grade que organiza texto e cartão de destaque do HERO. */
 .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:center}
+/* Coluna textual do HERO. */
 .hero-copy{min-width:0}
+/* Pequenos títulos de seção em caixa alta. */
 .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:700;color:var(--accent);margin:0 0 16px}
+/* Tipografia serifada para títulos de maior destaque. */
 .hero h1,h2{font-family:"Playfair Display",Georgia,serif;line-height:1.05;margin:0}
+/* Tamanho responsivo do título principal. */
 .hero h1{font-size:clamp(52px,7vw,92px);max-width:800px;letter-spacing:-.03em}
+/* Texto de apoio do HERO. */
 .hero-text{max-width:600px;color:#c9c5bd;font-size:18px;margin:24px 0 32px}
+/* Grupo de botões principais. */
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+/* Estilo base compartilhado pelos botões. */
 .button{display:inline-flex;justify-content:center;align-items:center;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid transparent;font-weight:700;cursor:pointer;transition:transform .2s,filter .2s,background .2s}
 .button-primary{background:var(--accent);color:#111}
 .button-primary:hover,.button-primary:focus-visible{transform:translateY(-2px);filter:brightness(1.05)}
@@ -37,22 +64,29 @@ button,input,select{font:inherit}
 .button-ghost:hover,.button-ghost:focus-visible{border-color:var(--accent);color:var(--accent)}
 .button-dark{background:#111;color:#fff}
 .button-dark:hover,.button-dark:focus-visible{background:#252525}
+/* Cartão lateral de destaque do HERO. */
 .hero-card{padding:34px;border:1px solid rgba(198,155,82,.35);background:rgba(255,255,255,.04);border-radius:var(--radius);box-shadow:var(--shadow)}
 .hero-card-label{display:block;color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.16em}
 .hero-card strong{display:block;font-family:"Playfair Display",serif;font-size:32px;line-height:1.1;margin:16px 0}
 .hero-card-line{display:block;width:50px;height:1px;background:var(--accent);margin:24px 0}
 .hero-card small{color:#aaa}
+/* Indicadores rápidos de confiança/diferenciais. */
 .hero-proof{display:flex;gap:24px;flex-wrap:wrap;margin-top:30px;color:#aaa;font-size:12px}
 .hero-proof span{display:flex;align-items:center;gap:8px}
 .hero-proof strong{color:var(--accent);font-size:11px}
+/* Títulos das seções. */
 .section h2{font-size:clamp(38px,5vw,62px);margin-bottom:24px}
+/* Layout de duas colunas usado em várias seções. */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
 .lead{font-size:24px;line-height:1.35}
 .section p{color:var(--muted)}
 .section-dark p{color:#aaa}
+/* Cabeçalho de seção com título e ação opcional. */
 .section-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:44px}
 .text-link{color:var(--accent);font-weight:700}
+/* Grade dos serviços. */
 .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+/* Card individual de serviço. */
 .service-card{padding:28px;background:var(--dark-2);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);transition:transform .2s,border-color .2s,box-shadow .2s}
 .service-card:hover{transform:translateY(-4px);border-color:rgba(198,155,82,.5);box-shadow:0 16px 36px rgba(0,0,0,.18)}
 .service-card h3,.highlight-card h3{font-family:"Playfair Display",serif;font-size:27px;margin:0 0 8px}
@@ -60,13 +94,18 @@ button,input,select{font:inherit}
 .service-meta{display:flex;justify-content:space-between;align-items:end;border-top:1px solid rgba(255,255,255,.1);margin-top:22px;padding-top:18px}
 .price{font-size:21px;font-weight:700;color:#fff}
 .duration{font-size:12px;color:#aaa}
+/* Fundo específico da seção de diferenciais. */
 .highlights-section{background:#ece7de}
+/* Grade dos diferenciais. */
 .highlights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .highlight-card{padding:30px;background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
 .highlight-card p{margin-bottom:0}
 .highlight-number{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.14em}
+/* Grade responsiva da galeria. */
 .gallery-grid{display:grid;grid-template-columns:1.1fr .9fr .9fr 1.1fr;gap:12px;margin-top:40px}
+/* Remove margem padrão das figuras. */
 .gallery-grid figure{margin:0}
+/* Moldura e comportamento visual de cada imagem. */
 .gallery-item{position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:var(--radius);background:linear-gradient(145deg,#3a3630,#0e0e0e);display:flex;align-items:end;padding:18px;color:#fff}
 .gallery-item.has-image{padding:0}
 .gallery-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
@@ -75,12 +114,17 @@ button,input,select{font:inherit}
 .gallery-item:hover img{transform:scale(1.04)}
 .gallery-item span{position:relative;z-index:1;font-size:13px;font-weight:700}
 .gallery-item.has-image span{position:absolute;left:18px;bottom:18px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+/* Lista de horários de funcionamento. */
 .hours-list{border-top:1px solid rgba(255,255,255,.12)}
 .hours-row{display:flex;justify-content:space-between;gap:20px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12)}
 .hours-row span:last-child{color:var(--accent);font-weight:700;text-align:right}
+/* Bloco de endereço e mapa. */
 .location-card{display:flex;justify-content:space-between;align-items:center;gap:30px;padding:55px;background:#e8e3d9;border-radius:var(--radius)}
+/* Área do formulário de agendamento. */
 .booking-section{background:#ded8cd}
+/* Organização entre explicação e formulário. */
 .booking-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+/* Cartão visual do formulário. */
 .booking-form{background:#fff;padding:30px;border-radius:var(--radius);box-shadow:var(--shadow)}
 .booking-form label{display:grid;gap:7px;font-weight:700;font-size:14px;margin-bottom:18px}
 .booking-form input,.booking-form select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:10px;padding:0 13px;background:#fff}
@@ -88,17 +132,24 @@ button,input,select{font:inherit}
 .booking-summary{padding:15px;background:#f4f1eb;border-radius:10px;color:var(--muted);margin:10px 0 18px}
 .booking-note{font-size:13px;padding-left:14px;border-left:2px solid var(--accent)}
 .booking-form .button{width:100%}
+/* Layout da seção de contato. */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+/* Lista de canais de contato. */
 .contact-list{display:grid}
 .contact-list a,.contact-list p{padding:18px 0;border-bottom:1px solid rgba(255,255,255,.12)}
 .contact-list a:hover,.contact-list a:focus-visible{color:var(--accent)}
+/* Rodapé. */
 .site-footer{background:#090909;color:#888;padding:25px 0}
 .site-footer .container{display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:12px}
 .footer-brand{display:flex;align-items:center;gap:14px;min-width:0}
 .footer-logo{display:block;width:128px;height:36px;object-fit:contain;object-position:left center}
+/* Notificação temporária exibida pelo JavaScript. */
 .toast{position:fixed;right:20px;bottom:20px;max-width:min(420px,calc(100% - 40px));background:#111;color:#fff;padding:14px 18px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;z-index:50}
 .toast.show{opacity:1;transform:translateY(0)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* Tablet: reduz colunas e reorganiza blocos. */
 @media(max-width:900px){.main-nav{gap:12px}.hero-grid{grid-template-columns:1fr}.hero-card{max-width:500px}.services-grid,.highlights-grid{grid-template-columns:repeat(2,1fr)}.gallery-grid{grid-template-columns:repeat(2,1fr)}.split,.booking-wrap,.contact-grid{grid-template-columns:1fr;gap:35px}.gallery-item:nth-child(2),.gallery-item:nth-child(3){transform:none}}
+/* Celular: ativa menu mobile e empilha conteúdos. */
 @media(max-width:700px){.footer-brand{align-items:flex-start;flex-direction:column;gap:8px}.container{width:min(100% - 28px,1160px)}.section{padding:72px 0}.menu-toggle{display:block}.main-nav{position:absolute;top:76px;left:0;right:0;display:none;padding:18px 20px 24px;background:#111;flex-direction:column;align-items:stretch;box-shadow:0 20px 30px rgba(0,0,0,.18)}.main-nav.open{display:flex}.main-nav a{padding:8px}.nav-cta{text-align:center}.hero{min-height:680px}.hero h1{font-size:52px}.hero-proof{gap:12px;display:grid}.services-grid,.highlights-grid,.gallery-grid{grid-template-columns:1fr}.location-card{align-items:flex-start;flex-direction:column}.site-footer .container{flex-direction:column}.section-heading{align-items:flex-start;flex-direction:column}.gallery-item:nth-child(2),.gallery-item:nth-child(3){transform:none}.hero-card{padding:26px}}
+/* Respeita a preferência do usuário por menos movimento. */
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
