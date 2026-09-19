@@ -352,6 +352,7 @@ function setupBooking() {
     time.appendChild(empty);
 
     const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
+    time.disabled = !(date.value && selected);
 
     if (date.value && selected) {
       const times = buildDemoTimes(date.value, selected);
@@ -385,7 +386,7 @@ function setupBooking() {
     summary.textContent =
       date.value && time.value && selected
         ? selected.nome + " • " + date.value.split("-").reverse().join("/") + " • " + time.value + " • " + selected.preco
-        : "Selecione os dados acima.";
+        : "Selecione serviço, data e horário.";
   };
 
   date.min = getLocalDate();
