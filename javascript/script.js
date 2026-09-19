@@ -165,7 +165,16 @@ function renderHours() {
 
   list.innerHTML = "";
 
-  CONFIG.horarios.forEach(([day, time]) => {
+  CONFIG.horarios.forEach(item => {
+    const day = Array.isArray(item) ? item[0] : item?.dia;
+    const time = Array.isArray(item)
+      ? item[1]
+      : item?.aberto
+        ? item.abertura + " – " + item.fechamento
+        : "Fechado";
+
+    if (!day) return;
+
     const row = document.createElement("div");
     row.className = "hours-row";
 
@@ -325,7 +334,14 @@ function getDayIndex(dateValue) {
 
 // Converte um intervalo como "09:00 – 19:00" em minutos.
 function parseOpeningHours(value) {
-  if (!value || value.toLowerCase() === "fechado") return null;
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    if (value.aberto === false) return null;
+    if (value.abertura && value.fechamento) {
+      value = value.abertura + " – " + value.fechamento;
+    }
+  }
+
+  if (!value || typeof value !== "string" || value.toLowerCase() === "fechado") return null;
 
   const parts = value.split(/[–-]/).map(part => part.trim());
   if (parts.length !== 2) return null;
@@ -383,8 +399,11 @@ function isValidBookingDate(dateValue) {
 function buildDemoTimes(dateValue, service) {
   const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
   const dayName = dayNames[getDayIndex(dateValue)];
-  const row = CONFIG.horarios.find(([day]) => day === dayName);
-  const opening = parseOpeningHours(row?.[1]);
+  const row = CONFIG.horarios.find(item => {
+    const day = Array.isArray(item) ? item[0] : item?.dia;
+    return day === dayName;
+  });
+  const opening = parseOpeningHours(row);
 
   if (!opening) return [];
 
