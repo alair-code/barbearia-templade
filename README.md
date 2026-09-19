@@ -42,7 +42,7 @@ Antes da publicação, substitua todos os dados de exemplo.
 
 ## Agendamento real
 
-O formulário usa o backend em `/api/agendamentos` e o PostgreSQL/Neon para consultar e registrar reservas.
+O formulário usa o backend em `/api/agendamentos` e o PostgreSQL/Neon para consultar e registrar reservas. Para o agendamento, o PostgreSQL é a fonte de verdade dos serviços, preços, durações, horários e regras operacionais; os dados em `javascript/configuracao.js` servem para apresentação e fallback do template.
 
 O fluxo atual:
 
@@ -138,7 +138,7 @@ Antes da publicação:
 2. configure `BARBEARIA_TIMEZONE` quando o cliente usar outro fuso;
 3. confirme que o banco recebeu `schema.sql` e `seed.sql`;
 4. troque todos os dados de exemplo;
-5. revise serviços, preços e horários;
+5. revise os serviços, preços e horários no banco e alinhe a apresentação em `javascript/configuracao.js`;
 6. teste desktop, tablet e celular;
 7. teste disponibilidade, conflito, buffer, dia fechado e horário fora do funcionamento;
 8. confira o console do navegador;
