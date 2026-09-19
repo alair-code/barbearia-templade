@@ -11,6 +11,11 @@ const $$ = selector => document.querySelectorAll(selector);
 
 // Atualiza metadados, identidade, textos e links a partir da configuração.
 function applyConfig() {
+  if (!CONFIG || !Array.isArray(CONFIG.servicos) || !Array.isArray(CONFIG.horarios) || !Array.isArray(CONFIG.galeria)) {
+    console.error("Configuração inválida: verifique javascript/configuracao.js.");
+    return;
+  }
+
   document.title = CONFIG.seo?.titulo || CONFIG.nome;
 
   const favicon = document.querySelector('link[rel="icon"]');
@@ -291,18 +296,44 @@ function getDayIndex(dateValue) {
 function parseOpeningHours(value) {
   if (!value || value.toLowerCase() === "fechado") return null;
 
-  const parts = value.split("–").map(part => part.trim());
+  const parts = value.split(/[–-]/).map(part => part.trim());
   if (parts.length !== 2) return null;
 
   const toMinutes = time => {
-    const [hours, minutes] = time.split(":").map(Number);
-    return hours * 60 + minutes;
+    const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
+    if (!match) return null;
+    return Number(match[1]) * 60 + Number(match[2]);
   };
 
-  return {
-    start: toMinutes(parts[0]),
-    end: toMinutes(parts[1])
-  };
+  const start = toMinutes(parts[0]);
+  const end = toMinutes(parts[1]);
+
+  if (start === null || end === null || end <= start) return null;
+
+  return { start, end };
+}
+
+function parseDuration(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return Math.max(1, value);
+  if (typeof value !== "string") return 30;
+
+  const normalized = value.toLowerCase().replace(",", ".");
+  const hoursMatch = normalized.match(/(\d+(?:\.\d+)?)\s*h/);
+  const minutesMatch = normalized.match(/(\d+)\s*(?:min|m)/);
+
+  const hours = hoursMatch ? Number(hoursMatch[1]) * 60 : 0;
+  const minutes = minutesMatch ? Number(minutesMatch[1]) : 0;
+  const parsed = hours + minutes;
+
+  return parsed > 0 ? parsed : 30;
+}
+
+function getNextLocalDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return date.getFullYear() + "-" + month + "-" + day;
 }
 
 // Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
@@ -329,7 +360,7 @@ function buildDemoTimes(dateValue, service) {
   // O horário de início trabalha sempre em blocos de 15 minutos.
   // Se um serviço foi escolhido, usamos sua duração para impedir início
   // próximo demais do fechamento.
-  const duration = service ? parseInt(service.duracao, 10) || 30 : 30;
+  const duration = service ? parseDuration(service.duracao) : 15;
   const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
   const now = new Date();
   const isToday = dateValue === getLocalDate();
@@ -420,10 +451,17 @@ function setupBooking() {
 
   // A data deve aparecer preenchida imediatamente, sem depender da seleção de serviço.
   const today = getLocalDate();
-  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false) {
-    date.min = today;
+  const minimumDate = CONFIG.agendamento?.permitirAgendamentoHoje === false
+    ? getNextLocalDate()
+    : today;
+
+  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false || CONFIG.agendamento?.permitirAgendamentoHoje === false) {
+    date.min = minimumDate;
+  } else {
+    date.removeAttribute("min");
   }
-  date.value = isValidBookingDate(date.value) ? date.value : today;
+
+  date.value = isValidBookingDate(date.value) ? date.value : minimumDate;
   date.removeAttribute("disabled");
   date.removeAttribute("readonly");
 
