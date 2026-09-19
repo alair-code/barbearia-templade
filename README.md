@@ -67,3 +67,15 @@ O projeto pode ser publicado como site estático em GitHub Pages, Vercel ou outr
 ## Licença
 
 Defina aqui a licença comercial que você pretende usar para distribuir este template.
+
+## Identidade visual e logo
+
+A identidade visual do cliente fica separada das fotos em `assets/branding/`.
+
+- Logo principal: `assets/branding/logo.svg`
+- A logo aparece no cabeçalho e no rodapé.
+- O caminho da logo fica centralizado em `CONFIG.logo` dentro de `js/script.js`.
+- Para um novo cliente, substitua `assets/branding/logo.svg` mantendo o mesmo nome, ou altere apenas `CONFIG.logo`.
+- O texto alternativo pode ser ajustado em `CONFIG.logoAlt`.
+
+Essa estrutura permite trocar a identidade visual sem precisar alterar a estrutura HTML do template.
