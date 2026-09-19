@@ -204,12 +204,11 @@
         </div>
 
         <form class="booking-form" id="booking-form">
-          <label for="booking-service">
-            Serviço
-            <select id="booking-service" required>
-              <option value="">Selecione um serviço</option>
-            </select>
-          </label>
+          <fieldset class="booking-services-fieldset">
+            <legend>Serviços</legend>
+            <p class="booking-field-help" id="booking-service-help">Você pode selecionar mais de um serviço.</p>
+            <div class="booking-services" id="booking-services" role="group" aria-describedby="booking-service-help"></div>
+          </fieldset>
 
           <label class="booking-field" for="booking-date">
             <span>Data do atendimento</span>
