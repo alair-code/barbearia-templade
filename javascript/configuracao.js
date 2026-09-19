@@ -27,6 +27,15 @@ const CONFIG = {
   endereco: "Rua Exemplo, 123 — Centro",
   mapQuery: "Rua Exemplo, 123 Centro",
 
+  // Regras centrais do agendamento. O backend deverá usar as mesmas regras
+  // quando a disponibilidade real for integrada.
+  agendamento: {
+    intervaloMinutos: 15,
+    intervaloEntreAtendimentosMinutos: 15,
+    bloquearDatasAnteriores: true,
+    permitirAgendamentoHoje: true
+  },
+
   servicos: [
     { nome: "Corte", descricao: "Corte personalizado com acabamento preciso.", preco: "R$ 40", duracao: "45 min" },
     { nome: "Barba", descricao: "Barba desenhada com cuidado e acabamento.", preco: "R$ 30", duracao: "30 min" },
