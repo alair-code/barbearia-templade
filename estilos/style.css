@@ -681,3 +681,14 @@ button,input,select{font:inherit}
   .gallery-grid{grid-auto-rows:auto}
   .gallery-item,.gallery-item:first-child,.gallery-item:nth-child(2),.gallery-item:nth-child(3),.gallery-item:nth-child(4){grid-column:auto;grid-row:auto;min-height:0;aspect-ratio:3/4}
 }
+
+
+/* Correção defensiva do menu mobile: garante visibilidade e prioridade sobre o conteúdo. */
+@media(max-width:700px){
+  .site-header{z-index:100}
+  .header-inner{position:relative}
+  .menu-toggle{position:relative;z-index:102;display:block!important;pointer-events:auto}
+  .main-nav{z-index:101;visibility:hidden;opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+  .main-nav.open{display:flex!important;visibility:visible;opacity:1;pointer-events:auto;transform:translateY(0)}
+  .main-nav.open a{pointer-events:auto}
+}
