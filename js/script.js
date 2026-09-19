@@ -34,8 +34,8 @@ const $$=selector=>document.querySelectorAll(selector);
 function applyConfig(){
   document.title=CONFIG.nome;
   const favicon=document.querySelector("link[rel=\"icon\"]");if(favicon)favicon.href=CONFIG.favicon;
-  $("[data-config]").forEach(el=>{const key=el.dataset.config;if(CONFIG[key]!==undefined)el.textContent=CONFIG[key]});
-  $("[data-logo]").forEach(el=>{el.src=CONFIG.logo;el.alt=CONFIG.logoAlt});
+  document.querySelectorAll("[data-config]").forEach(el=>{const key=el.dataset.config;if(CONFIG[key]!==undefined)el.textContent=CONFIG[key]});
+  document.querySelectorAll("[data-logo]").forEach(el=>{el.src=CONFIG.logo;el.alt=CONFIG.logoAlt});
   $$("[data-config-link='instagram']").forEach(el=>el.href=CONFIG.instagramUrl);
   $$(".whatsapp-link").forEach(el=>el.href="https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent("Olá! Gostaria de agendar um horário."));
   const mapLink=$(".map-link");if(mapLink)mapLink.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(CONFIG.mapQuery);
