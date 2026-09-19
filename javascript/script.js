@@ -456,6 +456,26 @@ function getNextLocalDate() {
   return date.getFullYear() + "-" + month + "-" + day;
 }
 
+// Valida se a data escolhida é hoje ou uma data futura.
+function isValidBookingDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
+
+  const [year, month, day] = value.split("-").map(Number);
+  const selected = new Date(year, month - 1, day);
+  if (
+    Number.isNaN(selected.getTime()) ||
+    selected.getFullYear() !== year ||
+    selected.getMonth() !== month - 1 ||
+    selected.getDate() !== day
+  ) return false;
+
+  const today = getLocalDate();
+  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false && value < today) return false;
+  if (CONFIG.agendamento?.permitirAgendamentoHoje === false && value === today) return false;
+
+  return true;
+}
+
 // Gera horários reais respeitando funcionamento, duração, intervalo e reservas existentes.
 function parseBlockedTimes(blocked) {
   return (Array.isArray(blocked) ? blocked : [])
