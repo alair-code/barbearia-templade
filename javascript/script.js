@@ -67,7 +67,7 @@ function applyConfig() {
 // Converte caminhos locais de recursos em URLs absolutas quando houver URL do site.
 function toAbsoluteUrl(path) {
   if (!path) return "";
-  if (/^https?:\\/\\//i.test(path)) return path;
+  if (/^https?:\/\//i.test(path)) return path;
   if (!CONFIG.seo?.url) return path;
 
   return new URL(path, CONFIG.seo.url).href;
