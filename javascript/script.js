@@ -1,8 +1,8 @@
 const CONFIG={
   nome:"Barbearia Template",
-  logo:"assets/branding/logo.svg",
+  logo:"recursos/identidade/logo.svg",
   logoAlt:"Logo da Barbearia Template",
-  favicon:"assets/branding/favicon.svg",
+  favicon:"recursos/identidade/favicon.svg",
   slogan:"Seu estilo começa aqui.",
   descricao:"Um espaço pensado para quem valoriza um bom corte, atendimento de qualidade e personalidade em cada detalhe.",
   whatsapp:"5500000000000",
@@ -24,7 +24,7 @@ const CONFIG={
     ["Quinta","09:00 – 20:00"],["Sexta","09:00 – 20:00"],["Sábado","08:00 – 18:00"],["Domingo","Fechado"]
   ],
   galeria:[
-    {label:"Ambiente",imagem:"assets/images/ambiente.svg"},{label:"Cortes",imagem:"assets/images/cortes.svg"},{label:"Detalhes",imagem:"assets/images/detalhes.svg"},{label:"Experiência",imagem:"assets/images/experiencia.svg"}
+    {label:"Ambiente",imagem:"recursos/imagens/ambiente.svg"},{label:"Cortes",imagem:"recursos/imagens/cortes.svg"},{label:"Detalhes",imagem:"recursos/imagens/detalhes.svg"},{label:"Experiência",imagem:"recursos/imagens/experiencia.svg"}
   ]
 };
 
