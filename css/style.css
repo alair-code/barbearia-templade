@@ -12,8 +12,8 @@ button,input,select{font:inherit}
 .section-dark{background:var(--dark);color:#f5f2eb}
 .site-header{position:sticky;top:0;z-index:20;background:rgba(17,17,17,.94);color:#fff;border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)}
 .header-inner{min-height:76px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:12px;font-weight:700}
-.brand-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--accent);color:var(--accent);font-family:Georgia,serif;border-radius:50%}
+.brand{display:flex;align-items:center;min-width:0}
+.brand-logo{display:block;width:160px;height:45px;object-fit:contain;object-position:left center}
 .main-nav{display:flex;align-items:center;gap:20px;font-size:14px}
 .main-nav a{opacity:.82}
 .main-nav a:hover,.main-nav a:focus-visible{opacity:1;color:var(--accent)}
