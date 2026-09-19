@@ -9,13 +9,13 @@ Servir como uma base profissional para novos clientes. A estrutura, identidade v
 ## Estrutura
 
 - `index.html` — estrutura semântica da página, SEO básico e acessibilidade.
-- `css/style.css` — identidade visual, componentes, responsividade e estados de interação.
-- `js/script.js` — configuração central, renderização de serviços/horários/galeria e interações.
-- `assets/` — espaço reservado para imagens, logos e outros arquivos estáticos.
+- `estilos/style.css` — identidade visual, componentes, responsividade e estados de interação.
+- `javascript/script.js` — configuração central, renderização de serviços/horários/galeria e interações.
+- `recursos/` — espaço reservado para imagens, logos e outros arquivos estáticos.
 
 ## Personalização rápida
 
-Edite o objeto `CONFIG` no início de `js/script.js`.
+Edite o objeto `CONFIG` no início de `javascript/script.js`.
 
 Ali ficam centralizados:
 
@@ -28,11 +28,11 @@ Ali ficam centralizados:
 - horários de funcionamento;
 - imagens da galeria.
 
-Para adicionar uma foto à galeria, coloque o arquivo em `assets/` e informe o caminho em `CONFIG.galeria`, por exemplo:
+Para adicionar uma foto à galeria, coloque o arquivo em `recursos/` e informe o caminho em `CONFIG.galeria`, por exemplo:
 
 `imagem: "assets/ambiente.webp"`
 
-As cores principais ficam nas variáveis no início de `css/style.css`.
+As cores principais ficam nas variáveis no início de `estilos/style.css`.
 
 ## Agendamento
 
@@ -70,12 +70,12 @@ Defina aqui a licença comercial que você pretende usar para distribuir este te
 
 ## Identidade visual e logo
 
-A identidade visual do cliente fica separada das fotos em `assets/branding/`.
+A identidade visual do cliente fica separada das fotos em `recursos/identidade/`.
 
-- Logo principal: `assets/branding/logo.svg`
+- Logo principal: `recursos/identidade/logo.svg`
 - A logo aparece no cabeçalho e no rodapé.
-- O caminho da logo fica centralizado em `CONFIG.logo` dentro de `js/script.js`.
-- Para um novo cliente, substitua `assets/branding/logo.svg` mantendo o mesmo nome, ou altere apenas `CONFIG.logo`.
+- O caminho da logo fica centralizado em `CONFIG.logo` dentro de `javascript/script.js`.
+- Para um novo cliente, substitua `recursos/identidade/logo.svg` mantendo o mesmo nome, ou altere apenas `CONFIG.logo`.
 - O texto alternativo pode ser ajustado em `CONFIG.logoAlt`.
 
 Essa estrutura permite trocar a identidade visual sem precisar alterar a estrutura HTML do template.
