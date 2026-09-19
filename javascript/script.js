@@ -346,6 +346,9 @@ function setupBooking() {
   if (!date || !time || !service || !summary || !form) return;
 
   const updateTimes = () => {
+    const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
+    const times = date.value ? buildDemoTimes(date.value, selected) : [];
+
     time.innerHTML = "";
 
     const placeholder = document.createElement("option");
@@ -354,13 +357,10 @@ function setupBooking() {
     if (!date.value) {
       placeholder.textContent = "Selecione uma data";
       time.appendChild(placeholder);
-      time.disabled = true;
+      time.disabled = false;
       updateBookingSummary();
       return;
     }
-
-    const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-    const times = buildDemoTimes(date.value, selected);
 
     if (!times.length) {
       const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
@@ -368,13 +368,13 @@ function setupBooking() {
       const opening = parseOpeningHours(row?.[1]);
 
       placeholder.textContent = !opening
-        ? "Fechado nesta data"
+        ? "Fechado nesta data — escolha outra"
         : date.value === getLocalDate()
-          ? "Não há mais horários disponíveis hoje"
-          : "Nenhum horário disponível";
+          ? "Não há mais horários hoje — escolha outra data"
+          : "Nenhum horário disponível para este serviço";
 
       time.appendChild(placeholder);
-      time.disabled = true;
+      time.disabled = false;
       updateBookingSummary();
       return;
     }
@@ -389,6 +389,7 @@ function setupBooking() {
       time.appendChild(option);
     });
 
+    // O campo permanece habilitado para que o usuário sempre possa abrir o seletor.
     time.disabled = false;
     updateBookingSummary();
   };
@@ -402,7 +403,10 @@ function setupBooking() {
         : "Selecione serviço, data e horário.";
   };
 
+  // O formulário já abre com a data de hoje para que o seletor de horário
+  // fique utilizável imediatamente, sem depender de uma ordem específica.
   date.min = getLocalDate();
+  if (!date.value) date.value = getLocalDate();
 
   date.addEventListener("change", updateTimes);
   service.addEventListener("change", updateTimes);
