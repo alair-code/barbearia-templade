@@ -14,7 +14,7 @@ const CONFIG = {
   // a URL abaixo por uma foto própria ou por outro recurso local.
   cabecalho: {
     usarImagem: true,
-    imagem: "https://images.unsplash.com/photo-1773904215697-e6c21fc27ac2?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=82&w=1800",
+    imagem: "recursos/imagens/cabecalho.svg",
     imagemAlt: "Interior moderno e elegante de uma barbearia",
     fallback: "recursos/imagens/ambiente.svg"
   },
