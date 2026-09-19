@@ -397,8 +397,12 @@ function setupBooking() {
         : "Selecione serviço, data e horário.";
   };
 
-  date.min = getLocalDate();
-  if (!date.value) date.value = getLocalDate();
+  // A data deve aparecer preenchida imediatamente, sem depender da seleção de serviço.
+  const today = getLocalDate();
+  date.min = today;
+  date.value = date.value || today;
+  date.removeAttribute("disabled");
+  date.removeAttribute("readonly");
 
   date.addEventListener("change", updateTimes);
   service.addEventListener("change", updateTimes);
