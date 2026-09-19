@@ -312,18 +312,19 @@ function buildDemoTimes(dateValue, service) {
   const row = CONFIG.horarios.find(([day]) => day === dayName);
   const opening = parseOpeningHours(row?.[1]);
 
-  if (!opening || !service) return [];
+  if (!opening) return [];
 
-  const duration = parseInt(service.duracao, 10) || 30;
+  // O horário de início trabalha sempre em blocos de 15 minutos.
+  // Se um serviço foi escolhido, usamos sua duração para impedir início
+  // próximo demais do fechamento.
+  const duration = service ? parseInt(service.duracao, 10) || 30 : 30;
   const interval = 15;
   const now = new Date();
   const isToday = dateValue === getLocalDate();
   const currentMinutes = isToday ? now.getHours() * 60 + now.getMinutes() : -1;
   const times = [];
 
-  // Os horários começam sempre em intervalos de 15 minutos.
-  // O serviço + intervalo de 15 minutos precisa caber antes do fechamento.
-  for (let start = opening.start; start + duration + interval <= opening.end; start += interval) {
+  for (let start = opening.start; start + duration <= opening.end; start += interval) {
     if (isToday && start <= currentMinutes) continue;
 
     const hours = String(Math.floor(start / 60)).padStart(2, "0");
@@ -344,50 +345,51 @@ function setupBooking() {
 
   if (!date || !time || !service || !summary || !form) return;
 
-  const update = () => {
+  const updateTimes = () => {
     time.innerHTML = "";
 
-    const empty = document.createElement("option");
-    empty.value = "";
-    empty.textContent = date.value ? "Selecione um horário" : "Selecione uma data";
-    time.appendChild(empty);
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+
+    if (!date.value) {
+      placeholder.textContent = "Selecione uma data";
+      time.appendChild(placeholder);
+      time.disabled = true;
+      updateBookingSummary();
+      return;
+    }
 
     const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-    // O campo permanece habilitado para evitar a sensação de bloqueio.
-    // Enquanto faltarem serviço ou data, mostramos apenas uma orientação.
+    const times = buildDemoTimes(date.value, selected);
+
+    if (!times.length) {
+      const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+      const row = CONFIG.horarios.find(([day]) => day === dayNames[getDayIndex(date.value)]);
+      const opening = parseOpeningHours(row?.[1]);
+
+      placeholder.textContent = !opening
+        ? "Fechado nesta data"
+        : date.value === getLocalDate()
+          ? "Não há mais horários disponíveis hoje"
+          : "Nenhum horário disponível";
+
+      time.appendChild(placeholder);
+      time.disabled = true;
+      updateBookingSummary();
+      return;
+    }
+
+    placeholder.textContent = "Selecione um horário";
+    time.appendChild(placeholder);
+
+    times.forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      time.appendChild(option);
+    });
+
     time.disabled = false;
-
-    if (!date.value && !selected) {
-      empty.textContent = "Selecione serviço e data";
-    } else if (!date.value) {
-      empty.textContent = "Selecione uma data";
-    } else if (!selected) {
-      empty.textContent = "Selecione um serviço";
-    }
-
-    if (date.value && selected) {
-      const times = buildDemoTimes(date.value, selected);
-
-      if (!times.length) {
-        const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-        const row = CONFIG.horarios.find(([day]) => day === dayNames[getDayIndex(date.value)]);
-        const opening = parseOpeningHours(row?.[1]);
-
-        empty.textContent = !opening
-          ? "Fechado nesta data"
-          : date.value === getLocalDate()
-            ? "Não há mais horários disponíveis hoje"
-            : "Nenhum horário disponível"; 
-      }
-
-      times.forEach(value => {
-        const option = document.createElement("option");
-        option.value = value;
-        option.textContent = value;
-        time.appendChild(option);
-      });
-    }
-
     updateBookingSummary();
   };
 
@@ -402,7 +404,8 @@ function setupBooking() {
 
   date.min = getLocalDate();
 
-  [date, service].forEach(field => field.addEventListener("change", update));
+  date.addEventListener("change", updateTimes);
+  service.addEventListener("change", updateTimes);
   time.addEventListener("change", updateBookingSummary);
 
   form.addEventListener("submit", event => {
@@ -415,6 +418,8 @@ function setupBooking() {
 
     showToast("Agendamento demonstrativo confirmado.");
   });
+
+  updateTimes();
 }
 
 // Mostra uma mensagem temporária no canto da tela.
