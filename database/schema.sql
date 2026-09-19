@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS clientes (
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_clientes_telefone_unique
+  ON clientes (telefone);
+
 CREATE TABLE IF NOT EXISTS servicos (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   nome text NOT NULL UNIQUE,

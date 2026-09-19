@@ -456,42 +456,45 @@ function getNextLocalDate() {
   return date.getFullYear() + "-" + month + "-" + day;
 }
 
-// Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
-function isDateBeforeToday(dateValue) {
-  return Boolean(dateValue) && dateValue < getLocalDate();
+// Gera horários reais respeitando funcionamento, duração, intervalo e reservas existentes.
+function parseBlockedTimes(blocked) {
+  return (Array.isArray(blocked) ? blocked : [])
+    .map(item => ({
+      start: parseTimeMinutes(item.hora_inicio),
+      end: parseTimeMinutes(item.hora_fim)
+    }))
+    .filter(item => item.start !== null && item.end !== null && item.end > item.start);
 }
 
-function isValidBookingDate(dateValue) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return false;
-  if (CONFIG.agendamento?.bloquearDatasAnteriores !== false && isDateBeforeToday(dateValue)) return false;
-  if (CONFIG.agendamento?.permitirAgendamentoHoje === false && dateValue === getLocalDate()) return false;
-  return true;
+function parseTimeMinutes(value) {
+  const match = /^(\d{2}):(\d{2})/.exec(String(value || ""));
+  if (!match) return null;
+  return Number(match[1]) * 60 + Number(match[2]);
 }
 
-// Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
-function buildDemoTimes(dateValue, services) {
-  const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-  const dayName = dayNames[getDayIndex(dateValue)];
-  const row = CONFIG.horarios.find(item => {
-    const day = Array.isArray(item) ? item[0] : item?.dia;
-    return day === dayName;
-  });
+function buildAvailableTimes(dateValue, services, availability) {
+  const dayIndex = getDayIndex(dateValue);
+  const row = availability?.hours?.find(item => Number(item?.dia_semana) === dayIndex);
   const opening = parseOpeningHours(row);
 
-  if (!opening) return [];
+  if (!opening || row?.aberto === false) return [];
 
   const selectedServices = Array.isArray(services) ? services : services ? [services] : [];
-  const duration = selectedServices.length
-    ? selectedServices.reduce((total, item) => total + parseDuration(item.duracao), 0)
-    : 15;
-  const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
+  const duration = selectedServices.reduce((total, item) => total + parseDuration(item.duracao), 0);
+  const interval = Number(availability?.config?.intervaloAgendamentoMinutos || CONFIG.agendamento?.intervaloMinutos || 15);
+  const buffer = Number(availability?.config?.intervaloEntreAtendimentosMinutos ?? CONFIG.agendamento?.intervaloEntreAtendimentosMinutos ?? 0);
+  const blocked = parseBlockedTimes(availability?.blocked);
   const now = new Date();
   const isToday = dateValue === getLocalDate();
   const currentMinutes = isToday ? now.getHours() * 60 + now.getMinutes() : -1;
   const times = [];
 
-  for (let start = opening.start; start + duration <= opening.end; start += interval) {
+  for (let start = opening.start; start + duration + buffer <= opening.end; start += interval) {
     if (isToday && start <= currentMinutes) continue;
+
+    const end = start + duration + buffer;
+    const overlaps = blocked.some(item => start < item.end && end > item.start);
+    if (overlaps) continue;
 
     const hours = String(Math.floor(start / 60)).padStart(2, "0");
     const minutes = String(start % 60).padStart(2, "0");
@@ -501,7 +504,7 @@ function buildDemoTimes(dateValue, services) {
   return times;
 }
 
-// Inicializa o formulário demonstrativo de agendamento.
+// Inicializa o formulário de agendamento com disponibilidade real do backend.
 function setupBooking() {
   const date = $("#booking-date");
   const time = $("#booking-time");
@@ -510,6 +513,9 @@ function setupBooking() {
   const form = $("#booking-form");
 
   if (!date || !time || !serviceGroup || !summary || !form) return;
+
+  let availabilityRequestId = 0;
+  let currentAvailableTimes = [];
 
   const updateBookingSummary = () => {
     const selection = getBookingSelection();
@@ -536,32 +542,30 @@ function setupBooking() {
     summary.textContent = "Selecione um ou mais serviços, data e horário.";
   };
 
-  const updateTimes = () => {
-    const selection = getBookingSelection();
-    const validDate = isValidBookingDate(date.value);
-    const validTimes = validDate && selection.services.length
-      ? buildDemoTimes(date.value, selection.services)
-      : [];
-
-    const dateIsInvalid = Boolean(date.value) && !validDate;
-    date.setCustomValidity(dateIsInvalid ? "Escolha hoje ou uma data futura." : "");
-    date.setAttribute("aria-invalid", String(dateIsInvalid));
-
+  const renderTimes = (validTimes, state = "ready") => {
     const previousTime = time.value;
     time.innerHTML = "";
 
     const placeholder = document.createElement("option");
     placeholder.value = "";
     placeholder.disabled = false;
-    placeholder.textContent = !date.value
-      ? "Selecione uma data"
-      : !selection.services.length
-        ? "Selecione ao menos um serviço"
-        : !validDate
-          ? "Escolha uma data válida"
-          : validTimes.length
-            ? "Selecione um horário"
-            : "Nenhum horário disponível";
+
+    if (state === "loading") {
+      placeholder.textContent = "Consultando horários...";
+    } else if (state === "error") {
+      placeholder.textContent = "Não foi possível carregar os horários";
+    } else if (!date.value) {
+      placeholder.textContent = "Selecione uma data";
+    } else if (!getBookingSelection().services.length) {
+      placeholder.textContent = "Selecione ao menos um serviço";
+    } else if (!isValidBookingDate(date.value)) {
+      placeholder.textContent = "Escolha uma data válida";
+    } else if (validTimes.length) {
+      placeholder.textContent = "Selecione um horário";
+    } else {
+      placeholder.textContent = "Nenhum horário disponível";
+    }
+
     time.appendChild(placeholder);
 
     validTimes.forEach(value => {
@@ -571,15 +575,49 @@ function setupBooking() {
       time.appendChild(option);
     });
 
-    time.disabled = false;
+    time.disabled = state === "loading" || state === "error";
+    if (previousTime && validTimes.includes(previousTime)) time.value = previousTime;
+    else time.value = "";
+  };
 
-    if (previousTime && validTimes.includes(previousTime)) {
-      time.value = previousTime;
-    } else {
-      time.value = "";
+  const loadAvailability = async () => {
+    const selection = getBookingSelection();
+    const validDate = isValidBookingDate(date.value);
+    const dateIsInvalid = Boolean(date.value) && !validDate;
+
+    date.setCustomValidity(dateIsInvalid ? "Escolha hoje ou uma data futura." : "");
+    date.setAttribute("aria-invalid", String(dateIsInvalid));
+    currentAvailableTimes = [];
+
+    if (!validDate || !selection.services.length) {
+      renderTimes([]);
+      updateBookingSummary();
+      return;
     }
 
-    updateBookingSummary();
+    const requestId = ++availabilityRequestId;
+    renderTimes([], "loading");
+    summary.textContent = "Consultando disponibilidade real...";
+
+    try {
+      const response = await fetch("/api/agendamentos?data=" + encodeURIComponent(date.value), {
+        headers: { "Accept": "application/json" },
+        cache: "no-store"
+      });
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.error || "Falha ao consultar disponibilidade.");
+      if (requestId !== availabilityRequestId) return;
+
+      currentAvailableTimes = buildAvailableTimes(date.value, selection.services, result);
+      renderTimes(currentAvailableTimes);
+      updateBookingSummary();
+    } catch (error) {
+      if (requestId !== availabilityRequestId) return;
+      console.error("Erro ao consultar disponibilidade:", error);
+      renderTimes([], "error");
+      summary.textContent = "Não foi possível carregar os horários. Tente novamente.";
+    }
   };
 
   const today = getLocalDate();
@@ -597,8 +635,8 @@ function setupBooking() {
   date.removeAttribute("disabled");
   date.removeAttribute("readonly");
 
-  serviceGroup.addEventListener("change", updateTimes);
-  date.addEventListener("change", updateTimes);
+  serviceGroup.addEventListener("change", loadAvailability);
+  date.addEventListener("change", loadAvailability);
   time.addEventListener("change", updateBookingSummary);
 
   form.addEventListener("submit", async event => {
@@ -618,14 +656,15 @@ function setupBooking() {
       return;
     }
 
-    if (!buildDemoTimes(date.value, selection.services).includes(time.value)) {
-      summary.textContent = "Esse horário não está disponível para os serviços selecionados.";
+    if (!currentAvailableTimes.includes(time.value)) {
+      await loadAvailability();
+      summary.textContent = "Esse horário não está mais disponível. Escolha outro horário.";
       return;
     }
 
     const submitButton = form.querySelector("button[type='submit']");
     if (submitButton) submitButton.disabled = true;
-    summary.textContent = "Consultando disponibilidade real...";
+    summary.textContent = "Confirmando agendamento...";
 
     try {
       const response = await fetch("/api/agendamentos", {
@@ -644,12 +683,19 @@ function setupBooking() {
 
       if (!response.ok) {
         summary.textContent = result.error || "Não foi possível concluir o agendamento.";
+        if (response.status === 409) await loadAvailability();
         return;
       }
 
-      summary.textContent = result.message + " • " + date.value.split("-").reverse().join("/") + " • " + time.value + " • " + formatPrice(result.booking.valorTotal);
+      summary.textContent =
+        result.message + " • " +
+        date.value.split("-").reverse().join("/") + " • " +
+        time.value + " • " +
+        formatPrice(result.booking.valorTotal);
+
       form.reset();
-      updateTimes();
+      currentAvailableTimes = [];
+      await loadAvailability();
       showToast("Agendamento realizado com sucesso.");
     } catch (error) {
       console.error("Erro ao conectar com o backend:", error);
@@ -659,7 +705,7 @@ function setupBooking() {
     }
   });
 
-  updateTimes();
+  loadAvailability();
 }
 
 // Mostra uma mensagem temporária no canto da tela.
