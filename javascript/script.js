@@ -345,52 +345,46 @@ function setupBooking() {
 
   if (!date || !time || !service || !summary || !form) return;
 
+  // Cria todos os horários possíveis uma única vez.
+  // Assim o seletor nunca fica vazio nem depende de uma atualização
+  // do JavaScript para poder ser aberto.
+  const allTimes = [];
+  for (let minutes = 6 * 60; minutes <= 22 * 60; minutes += 15) {
+    const hours = String(Math.floor(minutes / 60)).padStart(2, "0");
+    const mins = String(minutes % 60).padStart(2, "0");
+    allTimes.push(hours + ":" + mins);
+  }
+
+  time.innerHTML = '<option value="">Selecione um horário</option>';
+  allTimes.forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    time.appendChild(option);
+  });
+  time.disabled = false;
+
   const updateTimes = () => {
     const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-    const times = date.value ? buildDemoTimes(date.value, selected) : [];
+    const validTimes = date.value ? buildDemoTimes(date.value, selected) : [];
 
-    time.innerHTML = "";
+    Array.from(time.options).forEach((option, index) => {
+      if (index === 0) {
+        option.disabled = false;
+        return;
+      }
 
-    const placeholder = document.createElement("option");
-    placeholder.value = "";
-
-    if (!date.value) {
-      placeholder.textContent = "Selecione uma data";
-      time.appendChild(placeholder);
-      time.disabled = false;
-      updateBookingSummary();
-      return;
-    }
-
-    if (!times.length) {
-      const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-      const row = CONFIG.horarios.find(([day]) => day === dayNames[getDayIndex(date.value)]);
-      const opening = parseOpeningHours(row?.[1]);
-
-      placeholder.textContent = !opening
-        ? "Fechado nesta data — escolha outra"
-        : date.value === getLocalDate()
-          ? "Não há mais horários hoje — escolha outra data"
-          : "Nenhum horário disponível para este serviço";
-
-      time.appendChild(placeholder);
-      time.disabled = false;
-      updateBookingSummary();
-      return;
-    }
-
-    placeholder.textContent = "Selecione um horário";
-    time.appendChild(placeholder);
-
-    times.forEach(value => {
-      const option = document.createElement("option");
-      option.value = value;
-      option.textContent = value;
-      time.appendChild(option);
+      option.disabled = !validTimes.includes(option.value);
     });
 
-    // O campo permanece habilitado para que o usuário sempre possa abrir o seletor.
+    // Mantém o seletor aberto e utilizável mesmo quando não houver
+    // horários válidos para a data escolhida.
     time.disabled = false;
+
+    if (time.value && !validTimes.includes(time.value)) {
+      time.value = "";
+    }
+
     updateBookingSummary();
   };
 
@@ -403,8 +397,6 @@ function setupBooking() {
         : "Selecione serviço, data e horário.";
   };
 
-  // O formulário já abre com a data de hoje para que o seletor de horário
-  // fique utilizável imediatamente, sem depender de uma ordem específica.
   date.min = getLocalDate();
   if (!date.value) date.value = getLocalDate();
 
