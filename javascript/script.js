@@ -311,7 +311,7 @@ function isDateBeforeToday(dateValue) {
 }
 
 function isValidBookingDate(dateValue) {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(dateValue)) return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) return false;
   if (CONFIG.agendamento?.bloquearDatasAnteriores !== false && isDateBeforeToday(dateValue)) return false;
   if (CONFIG.agendamento?.permitirAgendamentoHoje === false && dateValue === getLocalDate()) return false;
   return true;
