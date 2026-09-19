@@ -283,19 +283,23 @@ function setupMenu() {
 
   if (!button || !nav) return;
 
-  const closeMenu = (restoreFocus = false) => {
-    nav.classList.remove("open");
-    button.setAttribute("aria-expanded", "false");
-    button.setAttribute("aria-label", "Abrir menu");
-    document.body.classList.remove("menu-open");
-    if (restoreFocus) button.focus();
-  };
-
-  button.addEventListener("click", () => {
-    const open = nav.classList.toggle("open");
+  const setMenuState = open => {
+    nav.classList.toggle("open", open);
     button.setAttribute("aria-expanded", String(open));
     button.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
     document.body.classList.toggle("menu-open", open);
+  };
+
+  const closeMenu = (restoreFocus = false) => {
+    setMenuState(false);
+    if (restoreFocus) button.focus();
+  };
+
+  button.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const open = button.getAttribute("aria-expanded") !== "true";
+    setMenuState(open);
 
     if (open) {
       const firstLink = nav.querySelector("a");
