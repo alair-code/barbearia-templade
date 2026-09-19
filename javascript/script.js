@@ -53,7 +53,7 @@ function applyConfig() {
     if (CONFIG[key] !== undefined) element.textContent = CONFIG[key];
   });
 
-  $("[data-logo]").forEach(element => {
+  $$("[data-logo]").forEach(element => {
     element.src = CONFIG.logo;
     element.alt = CONFIG.logoAlt;
   });
@@ -78,7 +78,7 @@ function applyConfig() {
     }
   }
 
-  $("[data-config-link='instagram']").forEach(element => {
+  $$("[data-config-link='instagram']").forEach(element => {
     element.href = CONFIG.instagramUrl;
   });
 
