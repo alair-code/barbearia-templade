@@ -24,7 +24,7 @@ const CONFIG = {
 
   seo: {
     titulo: "Barbearia Template | Estilo, precisão e experiência",
-    descricao: "Template profissional e reutilizável para barbearias, com serviços, galeria, horários, localização e agendamento demonstrativo.",
+    descricao: "Template profissional e reutilizável para barbearias, com serviços, galeria, horários, localização e agendamento integrado ao PostgreSQL.",
     url: "https://alair-code.github.io/barbearia-templade/",
     imagem: "recursos/identidade/compartilhamento.svg"
   },
@@ -36,8 +36,8 @@ const CONFIG = {
   endereco: "Rua Exemplo, 123 — Centro",
   mapQuery: "Rua Exemplo, 123 Centro",
 
-  // Regras centrais do agendamento. O backend deverá usar as mesmas regras
-  // quando a disponibilidade real for integrada.
+  // Regras de apresentação/fallback do agendamento. As regras operacionais
+  // são validadas pelo PostgreSQL e pela API em produção.
   agendamento: {
     intervaloMinutos: 15,
     intervaloEntreAtendimentosMinutos: 15,
@@ -45,6 +45,8 @@ const CONFIG = {
     permitirAgendamentoHoje: true
   },
 
+  // Catálogo de apresentação. No agendamento real, preço e duração são
+  // validados diretamente na tabela `servicos` do PostgreSQL.
   servicos: [
     { nome: "Corte", descricao: "Corte personalizado com acabamento preciso.", preco: "R$ 40", duracao: "45 min" },
     { nome: "Barba", descricao: "Barba desenhada com cuidado e acabamento.", preco: "R$ 30", duracao: "30 min" },
