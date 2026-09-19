@@ -601,7 +601,7 @@ function setupBooking() {
   date.addEventListener("change", updateTimes);
   time.addEventListener("change", updateBookingSummary);
 
-  form.addEventListener("submit", event => {
+  form.addEventListener("submit", async event => {
     event.preventDefault();
 
     const selection = getBookingSelection();
@@ -623,7 +623,40 @@ function setupBooking() {
       return;
     }
 
-    showToast("Agendamento demonstrativo confirmado. A disponibilidade real será validada quando o backend estiver integrado.");
+    const submitButton = form.querySelector("button[type='submit']");
+    if (submitButton) submitButton.disabled = true;
+    summary.textContent = "Consultando disponibilidade real...";
+
+    try {
+      const response = await fetch("/api/agendamentos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: $("#booking-name")?.value.trim() || "",
+          telefone: $("#booking-phone")?.value.trim() || "",
+          data: date.value,
+          hora: time.value,
+          servicos: selection.services.map(item => item.nome)
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        summary.textContent = result.error || "Não foi possível concluir o agendamento.";
+        return;
+      }
+
+      summary.textContent = result.message + " • " + date.value.split("-").reverse().join("/") + " • " + time.value + " • " + formatPrice(result.booking.valorTotal);
+      form.reset();
+      updateTimes();
+      showToast("Agendamento realizado com sucesso.");
+    } catch (error) {
+      console.error("Erro ao conectar com o backend:", error);
+      summary.textContent = "Não foi possível conectar ao sistema de agendamento. Tente novamente.";
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
   });
 
   updateTimes();
