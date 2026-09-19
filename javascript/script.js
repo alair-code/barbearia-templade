@@ -53,12 +53,32 @@ function applyConfig() {
     if (CONFIG[key] !== undefined) element.textContent = CONFIG[key];
   });
 
-  $$("[data-logo]").forEach(element => {
+  $("[data-logo]").forEach(element => {
     element.src = CONFIG.logo;
     element.alt = CONFIG.logoAlt;
   });
 
-  $$("[data-config-link='instagram']").forEach(element => {
+  const heroMedia = $("[data-hero-media]");
+  const heroImage = $("[data-hero-image]");
+  const heroConfig = CONFIG.cabecalho;
+
+  if (heroMedia && heroImage) {
+    if (heroConfig?.usarImagem === false || !heroConfig?.imagem) {
+      heroMedia.hidden = true;
+    } else {
+      heroImage.src = heroConfig.imagem;
+      heroImage.alt = heroConfig.imagemAlt || "";
+      heroImage.addEventListener("error", () => {
+        if (heroConfig.fallback && heroImage.src !== new URL(heroConfig.fallback, document.baseURI).href) {
+          heroImage.src = heroConfig.fallback;
+        } else {
+          heroMedia.hidden = true;
+        }
+      });
+    }
+  }
+
+  $("[data-config-link='instagram']").forEach(element => {
     element.href = CONFIG.instagramUrl;
   });
 

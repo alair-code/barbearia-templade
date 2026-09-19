@@ -10,6 +10,15 @@ const CONFIG = {
   logoAlt: "Logo da Barbearia Template",
   favicon: "recursos/identidade/favicon.svg",
 
+  // Imagem principal do cabeçalho/hero. Para um novo cliente, basta trocar
+  // a URL abaixo por uma foto própria ou por outro recurso local.
+  cabecalho: {
+    usarImagem: true,
+    imagem: "https://images.unsplash.com/photo-1773904215697-e6c21fc27ac2?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=82&w=1800",
+    imagemAlt: "Interior moderno e elegante de uma barbearia",
+    fallback: "recursos/imagens/ambiente.svg"
+  },
+
   slogan: "Seu estilo começa aqui.",
   descricao: "Um espaço pensado para quem valoriza um bom corte, atendimento de qualidade e personalidade em cada detalhe.",
 
