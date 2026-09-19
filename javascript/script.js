@@ -316,9 +316,15 @@ function buildDemoTimes(dateValue, service) {
 
   const duration = parseInt(service.duracao, 10) || 30;
   const interval = 15;
+  const step = duration + interval;
+  const now = new Date();
+  const isToday = dateValue === getLocalDate();
+  const currentMinutes = isToday ? now.getHours() * 60 + now.getMinutes() : -1;
   const times = [];
 
-  for (let start = opening.start; start + duration <= opening.end; start += duration + interval) {
+  for (let start = opening.start; start + duration <= opening.end; start += step) {
+    if (isToday && start <= currentMinutes) continue;
+
     const hours = String(Math.floor(start / 60)).padStart(2, "0");
     const minutes = String(start % 60).padStart(2, "0");
     times.push(hours + ":" + minutes);
@@ -351,7 +357,15 @@ function setupBooking() {
       const times = buildDemoTimes(date.value, selected);
 
       if (!times.length) {
-        empty.textContent = "Fechado nesta data";
+        const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+        const row = CONFIG.horarios.find(([day]) => day === dayNames[getDayIndex(date.value)]);
+        const opening = parseOpeningHours(row?.[1]);
+
+        empty.textContent = !opening
+          ? "Fechado nesta data"
+          : date.value === getLocalDate()
+            ? "Não há mais horários disponíveis hoje"
+            : "Nenhum horário disponível"; 
       }
 
       times.forEach(value => {
