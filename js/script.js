@@ -21,7 +21,7 @@ const CONFIG={
     ["Quinta","09:00 – 20:00"],["Sexta","09:00 – 20:00"],["Sábado","08:00 – 18:00"],["Domingo","Fechado"]
   ],
   galeria:[
-    {label:"Ambiente",imagem:""},{label:"Cortes",imagem:""},{label:"Detalhes",imagem:""},{label:"Experiência",imagem:""}
+    {label:"Ambiente",imagem:"assets/images/ambiente.svg"},{label:"Cortes",imagem:"assets/images/cortes.svg"},{label:"Detalhes",imagem:"assets/images/detalhes.svg"},{label:"Experiência",imagem:"assets/images/experiencia.svg"}
   ]
 };
 
