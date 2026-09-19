@@ -210,6 +210,8 @@ button,input,select{font:inherit}
 .booking-form label{display:grid;gap:7px;font-weight:700;font-size:14px;margin-bottom:18px}
 .booking-form input,.booking-form select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:10px;padding:0 13px;background:#fff}
 .booking-form input:focus,.booking-form select:focus{outline:2px solid rgba(198,155,82,.45);outline-offset:1px}
+.booking-form select:disabled{background:#f4f1eb;color:#8b857b;cursor:not-allowed}
+.booking-form .button:disabled{opacity:.55;cursor:not-allowed}
 .booking-summary{padding:15px;background:#f4f1eb;border-radius:10px;color:var(--muted);margin:10px 0 18px}
 .booking-note{font-size:13px;padding-left:14px;border-left:2px solid var(--accent)}
 .booking-form .button{width:100%}
