@@ -217,6 +217,37 @@ function renderGallery() {
 }
 
 // Controla o menu mobile e mantém o estado acessível para teclado e leitores de tela.
+// Destaca a seção atual na navegação conforme o usuário percorre a página.
+function setupScrollSpy() {
+  const links = Array.from(document.querySelectorAll('.main-nav a[href^="#"]'));
+  if (!links.length || !('IntersectionObserver' in window)) return;
+
+  const sections = links
+    .map(link => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+
+  const setActive = id => {
+    links.forEach(link => {
+      const active = link.getAttribute('href') === '#' + id;
+      if (active) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (visible) setActive(visible.target.id);
+  }, {
+    rootMargin: '-30% 0px -55% 0px',
+    threshold: [0.1, 0.3, 0.6]
+  });
+
+  sections.forEach(section => observer.observe(section));
+}
+
 function setupMenu() {
   const button = $(".menu-toggle");
   const nav = $("#main-menu");
@@ -517,4 +548,5 @@ renderServices();
 renderHours();
 renderGallery();
 setupMenu();
+setupScrollSpy();
 setupBooking();
