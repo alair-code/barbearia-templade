@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" role="img" aria-labelledby="title desc">
+  <title id="title">Logo demonstrativa da Barbearia Template</title>
+  <desc id="desc">Monograma B em círculo com o nome Barbearia Template.</desc>
+  <rect width="320" height="90" fill="none"/>
+  <circle cx="45" cy="45" r="31" fill="none" stroke="#c69b52" stroke-width="2"/>
+  <text x="45" y="58" text-anchor="middle" fill="#c69b52" font-family="Georgia,serif" font-size="40" font-weight="700">B</text>
+  <text x="92" y="40" fill="#ffffff" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="2">BARBEARIA</text>
+  <text x="92" y="63" fill="#c69b52" font-family="Georgia,serif" font-size="20" font-weight="700" letter-spacing="1">TEMPLATE</text>
+</svg>
