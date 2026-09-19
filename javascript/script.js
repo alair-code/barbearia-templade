@@ -139,12 +139,12 @@ function renderStructuredData() {
 // Renderiza os serviços e as opções do formulário de agendamento.
 function renderServices() {
   const list = $("#services-list");
-  const select = $("#booking-service");
+  const serviceGroup = $("#booking-services");
 
-  if (!list || !select) return;
+  if (!list || !serviceGroup) return;
 
   list.innerHTML = "";
-  select.innerHTML = '<option value="">Selecione um serviço</option>';
+  serviceGroup.innerHTML = "";
 
   CONFIG.servicos.forEach((service, index) => {
     const card = document.createElement("article");
@@ -171,10 +171,27 @@ function renderServices() {
     card.append(title, description, meta);
     list.appendChild(card);
 
-    const option = document.createElement("option");
-    option.value = String(index);
-    option.textContent = service.nome + " — " + service.preco;
-    select.appendChild(option);
+    const option = document.createElement("label");
+    option.className = "booking-service-option";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.name = "services";
+    checkbox.value = String(index);
+    checkbox.setAttribute("aria-describedby", "booking-service-help");
+
+    const content = document.createElement("span");
+    content.className = "booking-service-option-content";
+
+    const optionTitle = document.createElement("strong");
+    optionTitle.textContent = service.nome;
+
+    const optionMeta = document.createElement("span");
+    optionMeta.textContent = service.preco + " • " + service.duracao;
+
+    content.append(optionTitle, optionMeta);
+    option.append(checkbox, content);
+    serviceGroup.appendChild(option);
   });
 }
 
@@ -399,6 +416,38 @@ function parseDuration(value) {
   return parsed > 0 ? parsed : 30;
 }
 
+function parsePrice(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "string") return 0;
+
+  const normalized = value.replace(/[^0-9,.-]/g, "").replace(/\.(?=.*\.)/g, "").replace(",", ".");
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function formatPrice(value) {
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function getSelectedServices() {
+  return Array.from(document.querySelectorAll("#booking-services input[name='services']:checked"))
+    .map(input => CONFIG.servicos[Number(input.value)])
+    .filter(Boolean);
+}
+
+function getSelectedServiceIndexes() {
+  return Array.from(document.querySelectorAll("#booking-services input[name='services']:checked"))
+    .map(input => Number(input.value))
+    .filter(Number.isInteger);
+}
+
+function getBookingSelection() {
+  const services = getSelectedServices();
+  const duration = services.reduce((total, item) => total + parseDuration(item.duracao), 0);
+  const total = services.reduce((sum, item) => sum + parsePrice(item.preco), 0);
+  return { services, duration, total };
+}
+
 function getNextLocalDate() {
   const date = new Date();
   date.setDate(date.getDate() + 1);
@@ -420,7 +469,7 @@ function isValidBookingDate(dateValue) {
 }
 
 // Gera horários demonstrativos respeitando funcionamento, duração e intervalo de 15 minutos.
-function buildDemoTimes(dateValue, service) {
+function buildDemoTimes(dateValue, services) {
   const dayNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
   const dayName = dayNames[getDayIndex(dateValue)];
   const row = CONFIG.horarios.find(item => {
@@ -431,10 +480,10 @@ function buildDemoTimes(dateValue, service) {
 
   if (!opening) return [];
 
-  // O horário de início trabalha sempre em blocos de 15 minutos.
-  // Se um serviço foi escolhido, usamos sua duração para impedir início
-  // próximo demais do fechamento.
-  const duration = service ? parseDuration(service.duracao) : 15;
+  const selectedServices = Array.isArray(services) ? services : services ? [services] : [];
+  const duration = selectedServices.length
+    ? selectedServices.reduce((total, item) => total + parseDuration(item.duracao), 0)
+    : 15;
   const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
   const now = new Date();
   const isToday = dateValue === getLocalDate();
@@ -456,36 +505,43 @@ function buildDemoTimes(dateValue, service) {
 function setupBooking() {
   const date = $("#booking-date");
   const time = $("#booking-time");
-  const service = $("#booking-service");
+  const serviceGroup = $("#booking-services");
   const summary = $("#booking-summary");
   const form = $("#booking-form");
 
-  if (!date || !time || !service || !summary || !form) return;
+  if (!date || !time || !serviceGroup || !summary || !form) return;
 
-  // Cria todos os horários possíveis uma única vez.
-  // Assim o seletor nunca fica vazio nem depende de uma atualização
-  // do JavaScript para poder ser aberto.
-  const allTimes = [];
-  const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
-  for (let minutes = 6 * 60; minutes <= 22 * 60; minutes += interval) {
-    const hours = String(Math.floor(minutes / 60)).padStart(2, "0");
-    const mins = String(minutes % 60).padStart(2, "0");
-    allTimes.push(hours + ":" + mins);
-  }
+  const updateBookingSummary = () => {
+    const selection = getBookingSelection();
 
-  time.innerHTML = '<option value="">Selecione um horário</option>';
-  allTimes.forEach(value => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = value;
-    time.appendChild(option);
-  });
-  time.disabled = false;
+    if (date.value && time.value && selection.services.length) {
+      const names = selection.services.map(item => item.nome).join(" + ");
+      summary.textContent =
+        names + " • " +
+        date.value.split("-").reverse().join("/") + " • " +
+        time.value + " • " +
+        formatPrice(selection.total) + " • " +
+        selection.duration + " min";
+      return;
+    }
+
+    if (selection.services.length) {
+      summary.textContent =
+        selection.services.map(item => item.nome).join(" + ") +
+        " • " + formatPrice(selection.total) +
+        " • " + selection.duration + " min. Selecione data e horário.";
+      return;
+    }
+
+    summary.textContent = "Selecione um ou mais serviços, data e horário.";
+  };
 
   const updateTimes = () => {
-    const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
+    const selection = getBookingSelection();
     const validDate = isValidBookingDate(date.value);
-    const validTimes = validDate ? buildDemoTimes(date.value, selected) : [];
+    const validTimes = validDate && selection.services.length
+      ? buildDemoTimes(date.value, selection.services)
+      : [];
 
     const dateIsInvalid = Boolean(date.value) && !validDate;
     date.setCustomValidity(dateIsInvalid ? "Escolha hoje ou uma data futura." : "");
@@ -496,18 +552,19 @@ function setupBooking() {
         option.disabled = false;
         option.textContent = !date.value
           ? "Selecione uma data"
-          : !validDate
-            ? "Escolha uma data válida"
-            : validTimes.length
-              ? "Selecione um horário"
-              : "Nenhum horário disponível";
+          : !selection.services.length
+            ? "Selecione ao menos um serviço"
+            : !validDate
+              ? "Escolha uma data válida"
+              : validTimes.length
+                ? "Selecione um horário"
+                : "Nenhum horário disponível";
         return;
       }
 
       option.disabled = !validTimes.includes(option.value);
     });
 
-    // Mantém o seletor utilizável mesmo quando não houver horários válidos.
     time.disabled = false;
 
     if (time.value && !validTimes.includes(time.value)) {
@@ -517,16 +574,6 @@ function setupBooking() {
     updateBookingSummary();
   };
 
-  const updateBookingSummary = () => {
-    const selected = service.value !== "" ? CONFIG.servicos[Number(service.value)] : null;
-
-    summary.textContent =
-      date.value && time.value && selected
-        ? selected.nome + " • " + date.value.split("-").reverse().join("/") + " • " + time.value + " • " + selected.preco
-        : "Selecione serviço, data e horário.";
-  };
-
-  // A data deve aparecer preenchida imediatamente, sem depender da seleção de serviço.
   const today = getLocalDate();
   const minimumDate = CONFIG.agendamento?.permitirAgendamentoHoje === false
     ? getNextLocalDate()
@@ -542,15 +589,17 @@ function setupBooking() {
   date.removeAttribute("disabled");
   date.removeAttribute("readonly");
 
+  serviceGroup.addEventListener("change", updateTimes);
   date.addEventListener("change", updateTimes);
-  service.addEventListener("change", updateTimes);
   time.addEventListener("change", updateBookingSummary);
 
   form.addEventListener("submit", event => {
     event.preventDefault();
 
-    if (!date.value || !time.value || service.value === "") {
-      summary.textContent = "Preencha serviço, data e horário.";
+    const selection = getBookingSelection();
+
+    if (!date.value || !time.value || !selection.services.length) {
+      summary.textContent = "Selecione pelo menos um serviço, data e horário.";
       return;
     }
 
@@ -561,8 +610,8 @@ function setupBooking() {
       return;
     }
 
-    if (!buildDemoTimes(date.value, CONFIG.servicos[Number(service.value)]).includes(time.value)) {
-      summary.textContent = "Esse horário não está disponível para o serviço selecionado.";
+    if (!buildDemoTimes(date.value, selection.services).includes(time.value)) {
+      summary.textContent = "Esse horário não está disponível para os serviços selecionados.";
       return;
     }
 
