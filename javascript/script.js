@@ -98,16 +98,13 @@ function applyConfig() {
   renderStructuredData();
 }
 
-// Converte caminhos locais de recursos em URLs absolutas quando houver URL do site.
 function toAbsoluteUrl(path) {
   if (!path) return "";
   if (/^https?:\/\//i.test(path)) return path;
   if (!CONFIG.seo?.url) return path;
-
   return new URL(path, CONFIG.seo.url).href;
 }
 
-// Insere dados estruturados para ajudar mecanismos de busca a entenderem o negócio.
 function renderStructuredData() {
   let schema = document.getElementById("business-schema");
 
@@ -136,11 +133,9 @@ function renderStructuredData() {
   schema.textContent = JSON.stringify(schemaData);
 }
 
-// Renderiza os serviços e as opções do formulário de agendamento.
 function renderServices() {
   const list = $("#services-list");
   const serviceGroup = $("#booking-services");
-
   if (!list || !serviceGroup) return;
 
   list.innerHTML = "";
@@ -195,7 +190,6 @@ function renderServices() {
   });
 }
 
-// Renderiza os horários configurados na seção de funcionamento.
 function renderHours() {
   const list = $("#hours-list");
   if (!list) return;
@@ -226,7 +220,6 @@ function renderHours() {
   });
 }
 
-// Renderiza a galeria e remove imagens que não puderem ser carregadas.
 function renderGallery() {
   const list = $("#gallery-list");
   if (!list) return;
@@ -262,21 +255,19 @@ function renderGallery() {
   });
 }
 
-// Controla o menu mobile e mantém o estado acessível para teclado e leitores de tela.
-// Destaca a seção atual na navegação conforme o usuário percorre a página.
 function setupScrollSpy() {
   const links = Array.from(document.querySelectorAll('.main-nav a[href^="#"]'));
-  if (!links.length || !('IntersectionObserver' in window)) return;
+  if (!links.length || !("IntersectionObserver" in window)) return;
 
   const sections = links
-    .map(link => document.querySelector(link.getAttribute('href')))
+    .map(link => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
 
   const setActive = id => {
     links.forEach(link => {
-      const active = link.getAttribute('href') === '#' + id;
-      if (active) link.setAttribute('aria-current', 'page');
-      else link.removeAttribute('aria-current');
+      const active = link.getAttribute("href") === "#" + id;
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
     });
   };
 
@@ -287,7 +278,7 @@ function setupScrollSpy() {
 
     if (visible) setActive(visible.target.id);
   }, {
-    rootMargin: '-30% 0px -55% 0px',
+    rootMargin: "-30% 0px -55% 0px",
     threshold: [0.1, 0.3, 0.6]
   });
 
@@ -297,7 +288,6 @@ function setupScrollSpy() {
 function setupMenu() {
   const button = $(".menu-toggle");
   const nav = $("#main-menu");
-
   if (!button || !nav) return;
 
   const setMenuState = open => {
@@ -359,7 +349,6 @@ function setupMenu() {
   });
 }
 
-// Retorna a data local atual no formato YYYY-MM-DD.
 function getLocalDate() {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -367,13 +356,12 @@ function getLocalDate() {
   return now.getFullYear() + "-" + month + "-" + day;
 }
 
-// Converte YYYY-MM-DD para o índice do dia da semana.
 function getDayIndex(dateValue) {
   const [year, month, day] = dateValue.split("-").map(Number);
   return new Date(year, month - 1, day).getDay();
 }
 
-// Converte um intervalo como "09:00 – 19:00" em minutos.
+// Converte horários no formato HH:mm, HH:mm:ss ou valores equivalentes vindos do PostgreSQL.
 function parseOpeningHours(value) {
   if (value && typeof value === "object" && !Array.isArray(value)) {
     if (value.aberto === false) return null;
@@ -388,7 +376,7 @@ function parseOpeningHours(value) {
   if (parts.length !== 2) return null;
 
   const toMinutes = time => {
-    const match = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(time);
+    const match = /^(?:([01]?\d|2[0-3]):([0-5]\d))(?:\:\d{2}(?:\.\d+)?)?$/.exec(time);
     if (!match) return null;
     return Number(match[1]) * 60 + Number(match[2]);
   };
@@ -456,7 +444,6 @@ function getNextLocalDate() {
   return date.getFullYear() + "-" + month + "-" + day;
 }
 
-// Valida se a data escolhida é hoje ou uma data futura.
 function isValidBookingDate(value) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(value || ""))) return false;
 
@@ -476,7 +463,6 @@ function isValidBookingDate(value) {
   return true;
 }
 
-// Gera horários reais respeitando funcionamento, duração, intervalo e reservas existentes.
 function parseBlockedTimes(blocked) {
   return (Array.isArray(blocked) ? blocked : [])
     .map(item => ({
@@ -524,7 +510,6 @@ function buildAvailableTimes(dateValue, services, availability) {
   return times;
 }
 
-// Inicializa o formulário de agendamento com disponibilidade real do backend.
 function setupBooking() {
   const date = $("#booking-date");
   const time = $("#booking-time");
@@ -743,7 +728,6 @@ function setupBooking() {
   loadAvailability();
 }
 
-// Mostra uma mensagem temporária no canto da tela.
 function showToast(message) {
   const toast = $("#toast");
   if (!toast) return;
@@ -756,8 +740,6 @@ function showToast(message) {
   }, 3200);
 }
 
-
-// Inicializa todos os recursos depois que o DOM já foi carregado pelo HTML.
 applyConfig();
 renderServices();
 renderHours();
