@@ -547,27 +547,35 @@ function setupBooking() {
     date.setCustomValidity(dateIsInvalid ? "Escolha hoje ou uma data futura." : "");
     date.setAttribute("aria-invalid", String(dateIsInvalid));
 
-    Array.from(time.options).forEach((option, index) => {
-      if (index === 0) {
-        option.disabled = false;
-        option.textContent = !date.value
-          ? "Selecione uma data"
-          : !selection.services.length
-            ? "Selecione ao menos um serviço"
-            : !validDate
-              ? "Escolha uma data válida"
-              : validTimes.length
-                ? "Selecione um horário"
-                : "Nenhum horário disponível";
-        return;
-      }
+    const previousTime = time.value;
+    time.innerHTML = "";
 
-      option.disabled = !validTimes.includes(option.value);
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.disabled = false;
+    placeholder.textContent = !date.value
+      ? "Selecione uma data"
+      : !selection.services.length
+        ? "Selecione ao menos um serviço"
+        : !validDate
+          ? "Escolha uma data válida"
+          : validTimes.length
+            ? "Selecione um horário"
+            : "Nenhum horário disponível";
+    time.appendChild(placeholder);
+
+    validTimes.forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      time.appendChild(option);
     });
 
     time.disabled = false;
 
-    if (time.value && !validTimes.includes(time.value)) {
+    if (previousTime && validTimes.includes(previousTime)) {
+      time.value = previousTime;
+    } else {
       time.value = "";
     }
 
