@@ -32,7 +32,8 @@ Ali ficam centralizados:
 - endereço e busca do mapa;
 - serviços, preços e duração;
 - horários de funcionamento;
-- imagens da galeria.
+- imagens da galeria;
+- regras básicas do agendamento demonstrativo.
 
 ### SEO
 
@@ -67,7 +68,14 @@ recursos/
 
 ## Agendamento
 
-O formulário é **demonstrativo**. Ele respeita os dias fechados, a duração do serviço e o intervalo configurado de 15 minutos, mas não consulta banco de dados nem garante disponibilidade real.
+O formulário é **demonstrativo**. Ele bloqueia datas anteriores, respeita dias fechados, horário de funcionamento, duração do serviço e os intervalos configurados. Ele não consulta banco de dados e, portanto, não garante disponibilidade real entre diferentes usuários.
+
+As regras ficam centralizadas em `CONFIG.agendamento`:
+
+- `intervaloMinutos` — intervalo entre os horários exibidos no seletor;
+- `intervaloEntreAtendimentosMinutos` — margem planejada entre atendimentos para a futura camada de disponibilidade real;
+- `bloquearDatasAnteriores` — impede datas anteriores ao dia atual;
+- `permitirAgendamentoHoje` — permite ou não o agendamento no dia atual.
 
 Para transformar o fluxo em produto real, a próxima camada deve incluir backend, banco de dados, controle de conflitos, autenticação administrativa e regras reais de disponibilidade.
 
@@ -99,9 +107,11 @@ O projeto pode ser publicado como site estático em GitHub Pages, Vercel ou outr
 6. revisar serviços, preços e horários;
 7. testar desktop, tablet e celular;
 8. testar menu, links, mapa, imagens e formulário;
-9. validar SEO e dados estruturados;
-10. substituir o fluxo demonstrativo por backend quando houver agendamento real;
-11. remover todos os dados de exemplo antes da publicação.
+9. testar datas anteriores, dias fechados, horários fora do funcionamento e duração dos serviços;
+10. validar SEO e dados estruturados;
+11. verificar o console do navegador antes da publicação;
+12. substituir o fluxo demonstrativo por backend quando houver agendamento real;
+13. remover todos os dados de exemplo antes da publicação.
 
 ## Próximas evoluções possíveis
 
