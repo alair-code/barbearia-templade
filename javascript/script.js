@@ -25,6 +25,15 @@ function applyConfig() {
   const ogDescription = document.querySelector('meta[property="og:description"]');
   if (ogDescription) ogDescription.content = CONFIG.seo?.descricao || CONFIG.descricao;
 
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl && CONFIG.seo?.url) ogUrl.content = CONFIG.seo.url;
+
+  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twitterTitle) twitterTitle.content = CONFIG.seo?.titulo || CONFIG.nome;
+
+  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+  if (twitterDescription) twitterDescription.content = CONFIG.seo?.descricao || CONFIG.descricao;
+
   const ogImage = document.querySelector('meta[property="og:image"]');
   if (ogImage) ogImage.content = toAbsoluteUrl(CONFIG.seo?.imagem || CONFIG.logo);
 
@@ -209,11 +218,12 @@ function setupMenu() {
 
   if (!button || !nav) return;
 
-  const closeMenu = () => {
+  const closeMenu = (restoreFocus = false) => {
     nav.classList.remove("open");
     button.setAttribute("aria-expanded", "false");
     button.setAttribute("aria-label", "Abrir menu");
     document.body.classList.remove("menu-open");
+    if (restoreFocus) button.focus();
   };
 
   button.addEventListener("click", () => {
@@ -229,11 +239,11 @@ function setupMenu() {
   });
 
   nav.querySelectorAll("a").forEach(link => {
-    link.addEventListener("click", closeMenu);
+    link.addEventListener("click", () => closeMenu(false));
   });
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closeMenu();
+    if (event.key === "Escape" && nav.classList.contains("open")) closeMenu(true);
 
     if (event.key === "Tab" && nav.classList.contains("open")) {
       const focusable = nav.querySelectorAll("a");
@@ -254,12 +264,12 @@ function setupMenu() {
 
   document.addEventListener("click", event => {
     if (nav.classList.contains("open") && !nav.contains(event.target) && !button.contains(event.target)) {
-      closeMenu();
+      closeMenu(true);
     }
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 700) closeMenu();
+    if (window.innerWidth > 700) closeMenu(false);
   });
 }
 
