@@ -16,7 +16,7 @@ const CONFIG = {
   seo: {
     titulo: "Barbearia Template | Estilo, precisão e experiência",
     descricao: "Template profissional e reutilizável para barbearias, com serviços, galeria, horários, localização e agendamento demonstrativo.",
-    url: "https://exemplo.com/",
+    url: "https://alair-code.github.io/barbearia-templade/",
     imagem: "recursos/identidade/compartilhamento.svg"
   },
 
