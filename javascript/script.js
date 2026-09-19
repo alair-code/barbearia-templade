@@ -413,24 +413,27 @@ function setupBooking() {
     const validDate = isValidBookingDate(date.value);
     const validTimes = validDate ? buildDemoTimes(date.value, selected) : [];
 
-    if (date.value && !validDate) {
-      date.setCustomValidity("Escolha hoje ou uma data futura.");
-      summary.textContent = "A data escolhida não é válida. Selecione hoje ou uma data futura.";
-    } else {
-      date.setCustomValidity("");
-    }
+    const dateIsInvalid = Boolean(date.value) && !validDate;
+    date.setCustomValidity(dateIsInvalid ? "Escolha hoje ou uma data futura." : "");
+    date.setAttribute("aria-invalid", String(dateIsInvalid));
 
     Array.from(time.options).forEach((option, index) => {
       if (index === 0) {
         option.disabled = false;
+        option.textContent = !date.value
+          ? "Selecione uma data"
+          : !validDate
+            ? "Escolha uma data válida"
+            : validTimes.length
+              ? "Selecione um horário"
+              : "Nenhum horário disponível";
         return;
       }
 
       option.disabled = !validTimes.includes(option.value);
     });
 
-    // Mantém o seletor aberto e utilizável mesmo quando não houver
-    // horários válidos para a data escolhida.
+    // Mantém o seletor utilizável mesmo quando não houver horários válidos.
     time.disabled = false;
 
     if (time.value && !validTimes.includes(time.value)) {
