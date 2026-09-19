@@ -316,13 +316,14 @@ function buildDemoTimes(dateValue, service) {
 
   const duration = parseInt(service.duracao, 10) || 30;
   const interval = 15;
-  const step = duration + interval;
   const now = new Date();
   const isToday = dateValue === getLocalDate();
   const currentMinutes = isToday ? now.getHours() * 60 + now.getMinutes() : -1;
   const times = [];
 
-  for (let start = opening.start; start + duration <= opening.end; start += step) {
+  // Os horários começam sempre em intervalos de 15 minutos.
+  // O serviço + intervalo de 15 minutos precisa caber antes do fechamento.
+  for (let start = opening.start; start + duration + interval <= opening.end; start += interval) {
     if (isToday && start <= currentMinutes) continue;
 
     const hours = String(Math.floor(start / 60)).padStart(2, "0");
