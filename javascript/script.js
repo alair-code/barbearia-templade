@@ -26,12 +26,15 @@ function applyConfig() {
   if (ogDescription) ogDescription.content = CONFIG.seo?.descricao || CONFIG.descricao;
 
   const ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) ogImage.content = CONFIG.seo?.imagem || CONFIG.logo;
+  if (ogImage) ogImage.content = toAbsoluteUrl(CONFIG.seo?.imagem || CONFIG.logo);
 
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical && CONFIG.seo?.url) canonical.href = CONFIG.seo.url;
 
-  $$("[data-config]").forEach(element => {
+  const twitterImage = document.querySelector('meta[name="twitter:image"]');
+  if (twitterImage) twitterImage.content = toAbsoluteUrl(CONFIG.seo?.imagem || CONFIG.logo);
+
+  $("[data-config]").forEach(element => {
     const key = element.dataset.config;
     if (CONFIG[key] !== undefined) element.textContent = CONFIG[key];
   });
@@ -61,6 +64,15 @@ function applyConfig() {
   renderStructuredData();
 }
 
+// Converte caminhos locais de recursos em URLs absolutas quando houver URL do site.
+function toAbsoluteUrl(path) {
+  if (!path) return "";
+  if (/^https?:\\/\\//i.test(path)) return path;
+  if (!CONFIG.seo?.url) return path;
+
+  return new URL(path, CONFIG.seo.url).href;
+}
+
 // Insere dados estruturados para ajudar mecanismos de busca a entenderem o negócio.
 function renderStructuredData() {
   let schema = document.getElementById("business-schema");
@@ -78,7 +90,7 @@ function renderStructuredData() {
     name: CONFIG.nome,
     description: CONFIG.seo?.descricao || CONFIG.descricao,
     url: CONFIG.seo?.url || "",
-    image: CONFIG.seo?.imagem || CONFIG.logo,
+    image: toAbsoluteUrl(CONFIG.seo?.imagem || CONFIG.logo),
     telephone: CONFIG.telefone,
     address: {
       "@type": "PostalAddress",
