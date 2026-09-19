@@ -709,11 +709,8 @@ function setupBooking() {
       showToast("Agendamento realizado com sucesso.");
 
       if (whatsapp) {
-        window.open(
-          "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(whatsappMessage),
-          "_blank",
-          "noopener,noreferrer"
-        );
+        window.location.href =
+          "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(whatsappMessage);
       }
     } catch (error) {
       console.error("Erro ao conectar com o backend:", error);
