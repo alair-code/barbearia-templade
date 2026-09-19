@@ -30,7 +30,7 @@ Ali ficam centralizados:
 
 Para adicionar uma foto à galeria, coloque o arquivo em `recursos/` e informe o caminho em `CONFIG.galeria`, por exemplo:
 
-`imagem: "assets/ambiente.webp"`
+`imagem: "recursos/imagens/ambiente.webp"`
 
 As cores principais ficam nas variáveis no início de `estilos/style.css`.
 
