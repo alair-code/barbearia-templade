@@ -585,7 +585,6 @@ function showToast(message) {
   }, 3200);
 }
 
-setupPremiumEffects();
 
 // Inicializa todos os recursos depois que o DOM já foi carregado pelo HTML.
 applyConfig();
