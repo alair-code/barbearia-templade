@@ -48,7 +48,6 @@ const CONFIG = {
   servicos: [
     { nome: "Corte", descricao: "Corte personalizado com acabamento preciso.", preco: "R$ 40", duracao: "45 min" },
     { nome: "Barba", descricao: "Barba desenhada com cuidado e acabamento.", preco: "R$ 30", duracao: "30 min" },
-    { nome: "Corte + Barba", descricao: "Experiência completa para renovar o visual.", preco: "R$ 65", duracao: "75 min" },
     { nome: "Acabamento", descricao: "Detalhes e finalização para manter o corte.", preco: "R$ 20", duracao: "20 min" },
     { nome: "Sobrancelha", descricao: "Acabamento discreto e alinhado.", preco: "R$ 15", duracao: "15 min" },
     { nome: "Combo Premium", descricao: "Serviço completo para uma experiência especial.", preco: "R$ 80", duracao: "90 min" }
