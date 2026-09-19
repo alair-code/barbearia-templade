@@ -6,11 +6,13 @@
 <meta name="theme-color" content="#111111">
 <meta name="description" content="Template profissional e reutilizável para barbearias.">
 <meta name="robots" content="index,follow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Barbearia Template</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111111'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-size='38' fill='%23c69b52'%3EB%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -21,7 +23,7 @@
       <span data-config="nome">Barbearia Template</span>
     </a>
     <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="main-menu">
-      <span></span><span></span><span></span>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
     <nav class="main-nav" id="main-menu" aria-label="Navegação principal">
       <a href="#sobre">Sobre</a><a href="#servicos">Serviços</a><a href="#galeria">Galeria</a><a href="#horarios">Horários</a><a href="#localizacao">Localização</a><a href="#contato">Contato</a>
@@ -49,7 +51,7 @@
     <div class="hero-card">
       <span class="hero-card-label">Experiência</span>
       <strong>Seu próximo visual<br>começa aqui.</strong>
-      <span class="hero-card-line"></span>
+      <span class="hero-card-line" aria-hidden="true"></span>
       <small>Consulte serviços, horários e localização.</small>
     </div>
   </div>
@@ -69,7 +71,7 @@
   </div>
 </section>
 
-<section class="section highlights-section">
+<section class="section highlights-section" id="diferenciais">
   <div class="container">
     <div class="section-heading"><div><p class="eyebrow">Por que escolher</p><h2>Uma experiência pensada nos detalhes</h2></div></div>
     <div class="highlights-grid">
@@ -127,7 +129,7 @@
 </main>
 
 <footer class="site-footer">
-  <div class="container"><span data-config="nome">Barbearia Template</span><span>Template reutilizável • HTML + CSS + JavaScript</span></div>
+  <div class="container"><span>© <span id="current-year"></span> <span data-config="nome">Barbearia Template</span></span><span>Template reutilizável • HTML + CSS + JavaScript</span></div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="js/script.js"></script>
