@@ -313,6 +313,7 @@ function isDateBeforeToday(dateValue) {
 function isValidBookingDate(dateValue) {
   if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(dateValue)) return false;
   if (CONFIG.agendamento?.bloquearDatasAnteriores !== false && isDateBeforeToday(dateValue)) return false;
+  if (CONFIG.agendamento?.permitirAgendamentoHoje === false && dateValue === getLocalDate()) return false;
   return true;
 }
 
@@ -360,7 +361,8 @@ function setupBooking() {
   // Assim o seletor nunca fica vazio nem depende de uma atualização
   // do JavaScript para poder ser aberto.
   const allTimes = [];
-  for (let minutes = 6 * 60; minutes <= 22 * 60; minutes += 15) {
+  const interval = Number(CONFIG.agendamento?.intervaloMinutos) || 15;
+  for (let minutes = 6 * 60; minutes <= 22 * 60; minutes += interval) {
     const hours = String(Math.floor(minutes / 60)).padStart(2, "0");
     const mins = String(minutes % 60).padStart(2, "0");
     allTimes.push(hours + ":" + mins);
