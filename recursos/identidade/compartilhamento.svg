@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Barbearia Template</title>
+  <desc id="desc">Template profissional para barbearias</desc>
+  <rect width="1200" height="630" fill="#111111"/>
+  <circle cx="1040" cy="90" r="260" fill="#2a251e"/>
+  <circle cx="1040" cy="90" r="190" fill="none" stroke="#c69b52" stroke-width="2" opacity=".45"/>
+  <text x="90" y="120" fill="#c69b52" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="5">BARBEARIA TEMPLATE</text>
+  <text x="90" y="250" fill="#ffffff" font-family="Georgia, serif" font-size="74" font-weight="700">Seu estilo</text>
+  <text x="90" y="330" fill="#ffffff" font-family="Georgia, serif" font-size="74" font-weight="700">começa aqui.</text>
+  <rect x="90" y="390" width="70" height="2" fill="#c69b52"/>
+  <text x="90" y="445" fill="#c9c5bd" font-family="Arial, sans-serif" font-size="24">Estilo • Precisão • Experiência</text>
+  <text x="90" y="555" fill="#88837b" font-family="Arial, sans-serif" font-size="18">Template comercial reutilizável • HTML + CSS + JavaScript</text>
+</svg>
