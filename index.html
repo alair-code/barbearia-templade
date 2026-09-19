@@ -1,0 +1,272 @@
+<!-- Documento HTML5: estrutura principal do template da barbearia. -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <!-- Metadados, SEO, fontes, estilos e identidade visual. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <meta name="description" content="Template profissional e reutilizável para barbearias, com serviços, galeria, horários, localização e agendamento demonstrativo.">
+  <meta name="robots" content="index,follow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- Open Graph / compartilhamento social. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Barbearia Template | Estilo, precisão e experiência">
+  <meta property="og:description" content="Template profissional e reutilizável para barbearias.">
+  <meta property="og:url" content="https://alair-code.github.io/barbearia-templade/">
+  <meta property="og:image" content="recursos/identidade/compartilhamento.svg">
+  <meta property="og:image:alt" content="Barbearia Template">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Barbearia Template">
+  <meta name="twitter:description" content="Template profissional e reutilizável para barbearias.">
+  <meta name="twitter:image" content="recursos/identidade/compartilhamento.svg">
+
+  <title>Barbearia Template | Estilo, precisão e experiência</title>
+  <link rel="canonical" href="https://alair-code.github.io/barbearia-templade/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+  <link rel="stylesheet" href="estilos/style.css">
+  <link rel="icon" href="recursos/identidade/favicon.svg" type="image/svg+xml">
+</head>
+
+<body>
+  <!-- Corpo visível da página. -->
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- Cabeçalho fixo com logo e navegação principal. -->
+  <header class="site-header" id="inicio">
+    <div class="container header-inner">
+      <a class="brand" href="#inicio" aria-label="Voltar ao início">
+        <img class="brand-logo" src="recursos/identidade/logo.svg" alt="" width="160" height="45" data-logo>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="main-menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+
+      <nav class="main-nav" id="main-menu" aria-label="Navegação principal">
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#galeria">Galeria</a>
+        <a href="#horarios">Horários</a>
+        <a href="#localizacao">Localização</a>
+        <a href="#contato">Contato</a>
+        <a class="nav-cta" href="#agendamento">Agendar horário</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal: cada seção representa uma etapa da experiência. -->
+  <main id="conteudo">
+    <!-- HERO: primeira impressão, proposta de valor e ações principais. -->
+    <section class="hero section" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow">Estilo • Precisão • Experiência</p>
+          <h1 id="hero-title" data-config="slogan">Seu estilo começa aqui.</h1>
+          <p class="hero-text" data-config="descricao">Um espaço pensado para quem valoriza um bom corte, atendimento de qualidade e personalidade em cada detalhe.</p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#agendamento">Agendar horário</a>
+            <a class="button button-ghost whatsapp-link" href="#" target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+          </div>
+
+          <div class="hero-proof" aria-label="Diferenciais"><span class="hero-proof-status"><i aria-hidden="true"></i> Atendimento sob agendamento</span>
+            <span><strong>01</strong> Atendimento personalizado</span>
+            <span><strong>02</strong> Horários organizados</span>
+          </div>
+        </div>
+
+        <div class="hero-media" data-hero-media aria-label="Imagem da barbearia">
+          <img
+            class="hero-image"
+            src="recursos/imagens/ambiente.svg"
+            alt="Interior moderno e elegante de uma barbearia"
+            width="900"
+            height="700"
+            data-hero-image
+          >
+          <span class="hero-media-caption">Ambiente • Estilo • Experiência</span>
+        </div>
+
+        <div class="hero-card" aria-label="Resumo da experiência">
+          <span class="hero-card-label">Experiência</span>
+          <strong>Seu próximo visual<br>começa aqui.</strong>
+          <span class="hero-card-line" aria-hidden="true"></span>
+          <small>Consulte serviços, horários e localização.</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE: espaço para apresentar a história e o posicionamento. -->
+    <section class="section" id="sobre" aria-labelledby="sobre-title">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">Sobre nós</p>
+          <h2 id="sobre-title">Clássico na técnica.<br>Atual no estilo.</h2>
+        </div>
+        <div>
+          <p class="lead">Uma experiência de barbearia construída para unir técnica, cuidado e personalidade.</p>
+          <p>Apresente aqui a história, os diferenciais e a proposta da barbearia. O conteúdo pode ser personalizado sem alterar a estrutura do template.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVIÇOS: cards preenchidos dinamicamente pelo JavaScript. -->
+    <section class="section section-dark" id="servicos" aria-labelledby="servicos-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Serviços</p>
+            <h2 id="servicos-title">Escolha seu estilo</h2>
+          </div>
+          <a class="text-link" href="#agendamento">Agendar agora →</a>
+        </div>
+        <div class="services-grid" id="services-list"></div>
+      </div>
+    </section>
+
+    <!-- DIFERENCIAIS: benefícios e pontos fortes que podem ser personalizados. -->
+    <section class="section highlights-section" id="diferenciais" aria-labelledby="diferenciais-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Por que escolher</p>
+            <h2 id="diferenciais-title">Uma experiência pensada nos detalhes</h2>
+          </div>
+        </div>
+
+        <div class="highlights-grid">
+          <article class="highlight-card">
+            <span class="highlight-number">01</span>
+            <h3>Atendimento</h3>
+            <p>Comunicação simples e contato rápido para facilitar a jornada do cliente.</p>
+          </article>
+          <article class="highlight-card">
+            <span class="highlight-number">02</span>
+            <h3>Qualidade</h3>
+            <p>Apresente aqui os padrões, técnicas e cuidados que diferenciam o serviço.</p>
+          </article>
+          <article class="highlight-card">
+            <span class="highlight-number">03</span>
+            <h3>Praticidade</h3>
+            <p>Serviços, horários, localização e agendamento reunidos em um só lugar.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA: imagens carregadas a partir de CONFIG.galeria. -->
+    <section class="section" id="galeria" aria-labelledby="galeria-title">
+      <div class="container">
+        <p class="eyebrow">Galeria</p>
+        <h2 id="galeria-title">O ambiente também faz parte da experiência.</h2>
+        <div class="gallery-grid" id="gallery-list"></div>
+      </div>
+    </section>
+
+    <!-- HORÁRIOS: funcionamento gerado pelo JavaScript. -->
+    <section class="section section-dark" id="horarios" aria-labelledby="horarios-title">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">Funcionamento</p>
+          <h2 id="horarios-title">Quando nos encontrar</h2>
+          <p>Horários facilmente personalizáveis para cada negócio.</p>
+        </div>
+        <div class="hours-list" id="hours-list" aria-label="Horários de funcionamento"></div>
+      </div>
+    </section>
+
+    <!-- LOCALIZAÇÃO: endereço e link para o Google Maps. -->
+    <section class="section" id="localizacao" aria-labelledby="localizacao-title">
+      <div class="container location-card">
+        <div>
+          <p class="eyebrow">Localização</p>
+          <h2 id="localizacao-title">Estamos esperando por você.</h2>
+          <p data-config="endereco">Rua Exemplo, 123 — Centro</p>
+        </div>
+        <a class="button button-dark map-link" href="#" target="_blank" rel="noopener noreferrer">Como chegar</a>
+      </div>
+    </section>
+
+    <!-- AGENDAMENTO: fluxo demonstrativo preparado para futura integração. -->
+    <section class="section booking-section" id="agendamento" aria-labelledby="agendamento-title">
+      <div class="container booking-wrap">
+        <div>
+          <p class="eyebrow">Agendamento</p>
+          <h2 id="agendamento-title">Reserve seu horário</h2>
+          <p>Escolha o serviço, a data e um horário. Nesta versão, o fluxo é demonstrativo e está preparado para futura integração com backend.</p>
+          <p class="booking-note">Importante: este template não confirma disponibilidade real. A integração com banco e painel administrativo entra na próxima etapa.</p>
+        </div>
+
+        <form class="booking-form" id="booking-form">
+          <fieldset class="booking-services-fieldset">
+            <legend>Serviços</legend>
+            <p class="booking-field-help" id="booking-service-help">Você pode selecionar mais de um serviço.</p>
+            <div class="booking-services" id="booking-services" role="group" aria-describedby="booking-service-help"></div>
+          </fieldset>
+
+          <label class="booking-field" for="booking-date">
+            <span>Data do atendimento</span>
+            <input id="booking-date" name="date" type="date" min="" required aria-label="Selecione a data do atendimento">
+          </label>
+
+          <label class="booking-field" for="booking-time">
+            Horário
+            <select id="booking-time" required>
+              <option value="">Selecione uma data</option>
+            </select>
+          </label>
+
+          <div class="booking-summary" id="booking-summary" aria-live="polite">Selecione os dados acima.</div>
+          <button class="button button-primary" type="submit">Confirmar agendamento</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- CONTATO: canais de atendimento configurados em CONFIG. -->
+    <section class="section section-dark" id="contato" aria-labelledby="contato-title">
+      <div class="container contact-grid">
+        <div>
+          <p class="eyebrow">Contato</p>
+          <h2 id="contato-title">Fale com a barbearia.</h2>
+        </div>
+
+        <div class="contact-list">
+          <a class="whatsapp-link" href="#" target="_blank" rel="noopener noreferrer">WhatsApp <span data-config="telefone">(00) 00000-0000</span></a>
+          <a data-config-link="instagram" href="#" target="_blank" rel="noopener noreferrer">Instagram <span data-config="instagram">@barbearia</span></a>
+          <p data-config="endereco">Rua Exemplo, 123 — Centro</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé com identidade visual e informações do template. -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-brand">
+        <img class="footer-logo" src="recursos/identidade/logo.svg" alt="" width="128" height="36" data-logo>
+        <span>© <span id="current-year"></span> <span data-config="nome">Barbearia Template</span></span>
+      </div>
+      <span>Template reutilizável • HTML + CSS + JavaScript</span>
+    </div>
+  </footer>
+
+  <!-- Ação rápida de contato para facilitar conversão no celular. -->
+  <a class="floating-whatsapp whatsapp-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Falar com a barbearia pelo WhatsApp">
+    <span aria-hidden="true">WhatsApp</span>
+  </a>
+
+  <!-- Toast usado pelo JavaScript para mensagens rápidas. -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Configuração carregada antes da lógica principal. -->
+  <script src="javascript/configuracao.js"></script>
+  <!-- Lógica principal do template. -->
+  <script src="javascript/script.js"></script>
+</body>
+</html>
