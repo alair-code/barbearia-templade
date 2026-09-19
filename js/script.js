@@ -2,6 +2,7 @@ const CONFIG={
   nome:"Barbearia Template",
   logo:"assets/branding/logo.svg",
   logoAlt:"Logo da Barbearia Template",
+  favicon:"assets/branding/favicon.svg",
   slogan:"Seu estilo começa aqui.",
   descricao:"Um espaço pensado para quem valoriza um bom corte, atendimento de qualidade e personalidade em cada detalhe.",
   whatsapp:"5500000000000",
@@ -32,6 +33,7 @@ const $$=selector=>document.querySelectorAll(selector);
 
 function applyConfig(){
   document.title=CONFIG.nome;
+  const favicon=document.querySelector("link[rel=\"icon\"]");if(favicon)favicon.href=CONFIG.favicon;
   $("[data-config]").forEach(el=>{const key=el.dataset.config;if(CONFIG[key]!==undefined)el.textContent=CONFIG[key]});
   $("[data-logo]").forEach(el=>{el.src=CONFIG.logo;el.alt=CONFIG.logoAlt});
   $$("[data-config-link='instagram']").forEach(el=>el.href=CONFIG.instagramUrl);
