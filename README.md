@@ -1,6 +1,6 @@
 # Barbearia Template
 
-Template comercial reutilizável para barbearias, construído com HTML5, CSS3 e JavaScript puro, sem framework e sem dependência de backend.
+Template comercial reutilizável para barbearias, construído com HTML5, CSS3 e JavaScript puro, sem framework e sem backend.
 
 ## Objetivo
 
@@ -8,19 +8,25 @@ Servir como uma base profissional para novos clientes. A estrutura, identidade v
 
 ## Estrutura
 
-- `index.html` — estrutura semântica da página, SEO básico e acessibilidade.
+- `index.html` — estrutura semântica, SEO, compartilhamento social e acessibilidade.
 - `estilos/style.css` — identidade visual, componentes, responsividade e estados de interação.
-- `javascript/script.js` — configuração central, renderização de serviços/horários/galeria e interações.
-- `recursos/` — espaço reservado para imagens, logos e outros arquivos estáticos.
+- `javascript/configuracao.js` — dados do cliente, contatos, SEO, serviços, horários e galeria.
+- `javascript/script.js` — comportamento, renderização, menu, agendamento demonstrativo e dados estruturados.
+- `recursos/identidade/` — logo, favicon e arte de compartilhamento.
+- `recursos/imagens/` — imagens da galeria.
 
 ## Personalização rápida
 
-Edite o objeto `CONFIG` no início de `javascript/script.js`.
+Para entregar o template a um novo cliente, comece por `javascript/configuracao.js`.
 
 Ali ficam centralizados:
 
 - nome da empresa;
+- logo e favicon;
 - slogan e descrição;
+- título e descrição SEO;
+- URL canônica;
+- imagem de compartilhamento;
 - WhatsApp e telefone;
 - Instagram;
 - endereço e busca do mapa;
@@ -28,17 +34,56 @@ Ali ficam centralizados:
 - horários de funcionamento;
 - imagens da galeria.
 
-Para adicionar uma foto à galeria, coloque o arquivo em `recursos/` e informe o caminho em `CONFIG.galeria`, por exemplo:
+### SEO
 
-`imagem: "recursos/imagens/ambiente.webp"`
+Antes da publicação, ajuste:
 
-As cores principais ficam nas variáveis no início de `estilos/style.css`.
+- `seo.titulo`;
+- `seo.descricao`;
+- `seo.url` para a URL real;
+- `seo.imagem` para a arte social definitiva.
+
+O template também gera JSON-LD com o tipo `BarberShop` no navegador.
+
+> Para produção, prefira uma imagem social JPG/PNG/WebP de pelo menos 1200×630 px se o cliente tiver uma identidade visual raster. A arte SVG incluída serve como placeholder editável.
+
+## Imagens
+
+Coloque as fotos do cliente em `recursos/imagens/` e altere os caminhos em `CONFIG.galeria`.
+
+Para projetos maiores, pode organizar por cliente ou finalidade, por exemplo:
+
+```text
+recursos/
+├── identidade/
+│   ├── logo.svg
+│   ├── favicon.svg
+│   └── compartilhamento.svg
+└── imagens/
+    ├── ambiente/
+    ├── servicos/
+    └── galeria/
+```
 
 ## Agendamento
 
-O formulário de agendamento é **demonstrativo**. Ele respeita os dias fechados e gera horários com base no funcionamento configurado, mas não consulta banco de dados nem garante disponibilidade real.
+O formulário é **demonstrativo**. Ele respeita os dias fechados, a duração do serviço e o intervalo configurado de 15 minutos, mas não consulta banco de dados nem garante disponibilidade real.
 
-Para transformar o fluxo em produto real, a próxima camada deve incluir backend, banco de dados, controle de conflitos, autenticação administrativa e regras de disponibilidade.
+Para transformar o fluxo em produto real, a próxima camada deve incluir backend, banco de dados, controle de conflitos, autenticação administrativa e regras reais de disponibilidade.
+
+## Acessibilidade
+
+O template inclui:
+
+- link para pular ao conteúdo;
+- navegação semântica;
+- rótulos de formulário;
+- estados de foco visíveis;
+- menu mobile com `aria-expanded`;
+- fechamento do menu com ESC;
+- controle básico de foco no menu mobile;
+- suporte a `prefers-reduced-motion`;
+- textos alternativos para imagens da galeria.
 
 ## Publicação
 
@@ -47,13 +92,16 @@ O projeto pode ser publicado como site estático em GitHub Pages, Vercel ou outr
 ## Checklist antes de entregar a um cliente
 
 1. trocar nome, textos e identidade;
-2. substituir as imagens da galeria;
-3. configurar WhatsApp, Instagram e endereço;
-4. revisar serviços, preços e horários;
-5. testar desktop, tablet e celular;
-6. testar menu, links, mapa e formulário;
-7. substituir o fluxo demonstrativo por backend quando houver agendamento real;
-8. remover qualquer dado de exemplo antes da publicação.
+2. substituir logo e favicon;
+3. substituir as imagens da galeria;
+4. configurar WhatsApp, Instagram e endereço;
+5. configurar título, descrição, URL canônica e imagem social;
+6. revisar serviços, preços e horários;
+7. testar desktop, tablet e celular;
+8. testar menu, links, mapa, imagens e formulário;
+9. validar SEO e dados estruturados;
+10. substituir o fluxo demonstrativo por backend quando houver agendamento real;
+11. remover todos os dados de exemplo antes da publicação.
 
 ## Próximas evoluções possíveis
 
@@ -62,20 +110,9 @@ O projeto pode ser publicado como site estático em GitHub Pages, Vercel ou outr
 - agendamento com disponibilidade real;
 - gerenciamento de clientes e serviços;
 - domínio próprio;
-- métricas e SEO avançado.
+- métricas e SEO avançado;
+- integração de pagamentos, quando necessária.
 
 ## Licença
 
 Defina aqui a licença comercial que você pretende usar para distribuir este template.
-
-## Identidade visual e logo
-
-A identidade visual do cliente fica separada das fotos em `recursos/identidade/`.
-
-- Logo principal: `recursos/identidade/logo.svg`
-- A logo aparece no cabeçalho e no rodapé.
-- O caminho da logo fica centralizado em `CONFIG.logo` dentro de `javascript/script.js`.
-- Para um novo cliente, substitua `recursos/identidade/logo.svg` mantendo o mesmo nome, ou altere apenas `CONFIG.logo`.
-- O texto alternativo pode ser ajustado em `CONFIG.logoAlt`.
-
-Essa estrutura permite trocar a identidade visual sem precisar alterar a estrutura HTML do template.
