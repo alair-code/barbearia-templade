@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 CREATE TABLE IF NOT EXISTS clientes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   nome text NOT NULL,
-  telefone text,
+  telefone text NOT NULL,
   email text,
   observacoes text,
   ativo boolean NOT NULL DEFAULT true,

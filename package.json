@@ -2,6 +2,15 @@
   "name": "barbearia-template",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
+  "description": "Template comercial reutilizável para barbearias com agendamento real (API serverless + PostgreSQL/Neon).",
+  "main": "api/agendamentos.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "engines": {
+    "node": ">=19.0.0"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0"
   }

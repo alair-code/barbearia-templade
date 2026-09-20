@@ -365,6 +365,7 @@ button,input,select{font:inherit}
   .hero-card{padding:26px}
 }
 
+/* Menu mobile em telas pequenas: alterna via JavaScript. */
 /* Respeita a preferência do usuário por menos movimento. */
 @media(max-width:700px){
   .floating-whatsapp{right:14px;bottom:14px;min-width:52px;height:52px;padding:0 14px}

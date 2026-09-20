@@ -193,7 +193,7 @@
       </div>
     </section>
 
-    <!-- AGENDAMENTO: fluxo demonstrativo preparado para futura integração. -->
+    <!-- AGENDAMENTO: fluxo integrado à API e ao banco de dados. -->
     <section class="section booking-section" id="agendamento" aria-labelledby="agendamento-title">
       <div class="container booking-wrap">
         <div>
@@ -213,6 +213,11 @@
           <label class="booking-field" for="booking-name">
             <span>Seu nome</span>
             <input id="booking-name" name="name" type="text" autocomplete="name" required placeholder="Como podemos chamar você?">
+          </label>
+
+          <label class="booking-field" for="booking-phone">
+            <span>Seu WhatsApp</span>
+            <input id="booking-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(00) 00000-0000">
           </label>
 
         <label class="booking-field" for="booking-date">

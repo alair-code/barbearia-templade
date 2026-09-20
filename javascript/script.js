@@ -423,12 +423,6 @@ function getSelectedServices() {
     .filter(Boolean);
 }
 
-function getSelectedServiceIndexes() {
-  return Array.from(document.querySelectorAll("#booking-services input[name='services']:checked"))
-    .map(input => Number(input.value))
-    .filter(Number.isInteger);
-}
-
 function getBookingSelection() {
   const services = getSelectedServices();
   const duration = services.reduce((total, item) => total + parseDuration(item.duracao), 0);
@@ -648,9 +642,17 @@ function setupBooking() {
     event.preventDefault();
 
     const selection = getBookingSelection();
+    const phoneInput = $("#booking-phone");
+    const phoneDigits = (phoneInput?.value || "").replace(/\D/g, "");
 
     if (!date.value || !time.value || !selection.services.length) {
       summary.textContent = "Selecione pelo menos um serviço, data e horário.";
+      return;
+    }
+
+    if (phoneDigits.length < 10 || phoneDigits.length > 13) {
+      summary.textContent = "Informe um WhatsApp válido com DDD, por exemplo (11) 91234-5678.";
+      if (phoneInput) phoneInput.focus();
       return;
     }
 
@@ -677,6 +679,7 @@ function setupBooking() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: $("#booking-name")?.value.trim() || "",
+          telefone: phoneDigits,
           data: date.value,
           hora: time.value,
           servicos: selection.services.map(item => item.nome)
@@ -702,6 +705,7 @@ function setupBooking() {
       const whatsappMessage = [
         "Olá! Acabei de solicitar um agendamento.",
         "Nome: " + ($("#booking-name")?.value.trim() || ""),
+        "WhatsApp: " + phoneDigits,
         "Serviços: " + servicesText,
         "Data: " + date.value.split("-").reverse().join("/"),
         "Horário: " + time.value,

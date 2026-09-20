@@ -1,8 +1,23 @@
 import { neon } from "@neondatabase/serverless";
 
 const databaseUrl = process.env.BARBEARIA_DATABASE_URL || process.env.DATABASE_URL;
-const sql = neon(databaseUrl);
+// Sem banco configurado a API responde com erro claro em vez de quebrar na importação.
+const sql = databaseUrl ? neon(databaseUrl) : null;
 const BUSINESS_TIME_ZONE = process.env.BARBEARIA_TIMEZONE || "America/Sao_Paulo";
+
+function getDatabaseUnavailableResponse() {
+  console.error("BARBEARIA_DATABASE_URL ou DATABASE_URL não configurada.");
+  return json({ error: "O sistema de agendamento não está disponível. Configure o banco de dados." }, 500);
+}
+
+function normalizePhone(value) {
+  return String(value || "").replace(/\D/g, "");
+}
+
+function validatePhone(value) {
+  const digits = normalizePhone(value);
+  return digits.length >= 10 && digits.length <= 13 ? digits : null;
+}
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -54,6 +69,8 @@ async function getBusinessHours(dateValue) {
 
 export async function GET(request) {
   try {
+    if (!sql) return getDatabaseUnavailableResponse();
+
     const url = new URL(request.url);
     const date = url.searchParams.get("data");
     if (!isValidDate(date)) return json({ error: "Data inválida." }, 400);
@@ -93,8 +110,11 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    if (!sql) return getDatabaseUnavailableResponse();
+
     const body = await request.json();
     const nome = String(body.nome || "").trim();
+    const telefone = validatePhone(body.telefone);
     const data = String(body.data || "");
     const hora = String(body.hora || "");
     const nomesServicos = Array.isArray(body.servicos)
@@ -102,8 +122,9 @@ export async function POST(request) {
       : [];
 
     if (nome.length < 2 || nome.length > 120 || !isValidDate(data) ||
-        !/^([01]\d|2[0-3]):[0-5]\d$/.test(hora) || !nomesServicos.length || nomesServicos.length > 20) {
-      return json({ error: "Informe nome, data, horário e pelo menos um serviço válido." }, 400);
+        !/^([01]\d|2[0-3]):[0-5]\d$/.test(hora) || !telefone ||
+        !nomesServicos.length || nomesServicos.length > 20) {
+      return json({ error: "Informe nome, WhatsApp, data, horário e pelo menos um serviço válido." }, 400);
     }
 
     const services = await sql`
@@ -156,8 +177,12 @@ export async function POST(request) {
 
     const bookingRows = await sql`
       WITH cliente AS (
-        INSERT INTO clientes (nome, ativo)
-        VALUES (${nome}, true)
+        INSERT INTO clientes (nome, telefone, ativo)
+        VALUES (${nome}, ${telefone}, true)
+        ON CONFLICT (telefone) WHERE telefone IS NOT NULL DO UPDATE SET
+          nome = EXCLUDED.nome,
+          ativo = true,
+          updated_at = now()
         RETURNING id
       ),
       novo_agendamento AS (
@@ -204,6 +229,11 @@ export async function POST(request) {
       }
     }, 201);
   } catch (error) {
+    // Erros tratados: conflito de agendamento simultâneo (23P01) e
+    // tentativa de inserir/atualizar sem telefone válido (23502).
+    if (error?.code === "23502") {
+      return json({ error: "Informe um WhatsApp válido para concluir o agendamento." }, 400);
+    }
     if (error?.code === "23P01") {
       return json({ error: "Esse horário acabou de ser reservado. Escolha outro horário." }, 409);
     }
@@ -213,4 +243,12 @@ export async function POST(request) {
     console.error(error);
     return json({ error: "Não foi possível concluir o agendamento." }, 500);
   }
+}
+
+// Handler único para plataformas de função serverless (ex.: Vercel Functions),
+// roteando GET para a disponibilidade e POST para a criação do agendamento.
+export default async function handler(request) {
+  if (request.method === "GET") return GET(request);
+  if (request.method === "POST") return POST(request);
+  return json({ error: "Método não permitido." }, 405);
 }

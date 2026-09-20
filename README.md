@@ -46,7 +46,7 @@ O formulário usa o backend em `/api/agendamentos` e o PostgreSQL/Neon para cons
 
 O fluxo atual:
 
-1. o cliente escolhe um ou mais serviços;
+1. o cliente escolhe um ou mais serviços e informa nome e WhatsApp;
 2. o frontend consulta a disponibilidade real da data;
 3. horários já ocupados são removidos da lista;
 4. duração dos serviços e intervalo entre atendimentos são considerados;
